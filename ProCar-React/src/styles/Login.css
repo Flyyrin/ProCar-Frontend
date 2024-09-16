@@ -1,0 +1,11 @@
+.password-toggler {
+  color: #6946e8;
+}
+
+.password-toggler:hover {
+  text-decoration: underline;
+}
+
+.nav-tabs .nav-link:hover {
+  color: black !important;
+}

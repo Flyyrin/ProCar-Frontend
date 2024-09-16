@@ -1,13 +1,14 @@
 import { useState } from "react";
 import reactLogo from "../assets/react.svg";
-import "../styles/App.css";
-import Message from "../components/Message";
+import Header from "../components/Header";
 
 function Home() {
   const [count, setCount] = useState(0);
 
   return (
     <>
+      <Header notificationStatus={{ messages: true, notifications: true }} />
+
       <div>
         <a href="https://react.dev" target="_blank">
           <img src={reactLogo} className="logo react" alt="React logo" />
@@ -18,7 +19,6 @@ function Home() {
         <button onClick={() => setCount((count) => count + 1)}>
           count is {count}
         </button>
-        <Message></Message>
         <p>
           Edit <code>src/App.tsx</code> and save to test HMR
         </p>
