@@ -1,5 +1,6 @@
 import Helmet from "react-helmet";
 import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 function Messages() {
   return (
@@ -9,6 +10,7 @@ function Messages() {
       </Helmet>
       <Header />
       <p>Berichten</p>
+      <Footer />
     </>
   );
 }

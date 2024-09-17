@@ -1,5 +1,6 @@
 import Helmet from "react-helmet";
 import Header from "../components/Header";
+import Footer from "../components/Footer";
 import searchImage from "../assets/search.png";
 
 function NotFound() {
@@ -8,7 +9,9 @@ function NotFound() {
       <Helmet>
         <title>Pagina niet gevonden - ProCar</title>
       </Helmet>
-      <Header />
+      <Header
+        headerStatus={{ messages: true, signedIn: true, name: "Rafael.L" }}
+      />
       <div className="container-fluid pt-5 text-center">
         <h3 className="fw-bold my-5">We konden deze pagina niet vinden.</h3>
         <div className="row d-flex justify-content-center">
@@ -17,6 +20,7 @@ function NotFound() {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 }

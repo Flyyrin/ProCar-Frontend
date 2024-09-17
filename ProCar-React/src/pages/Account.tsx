@@ -1,5 +1,6 @@
 import Helmet from "react-helmet";
 import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 function Account() {
   return (
@@ -7,8 +8,11 @@ function Account() {
       <Helmet>
         <title>Mijn Account - ProCar</title>
       </Helmet>
-      <Header notificationStatus={{ messages: true }} />
+      <Header
+        headerStatus={{ messages: true, signedIn: true, name: "Rafael.L" }}
+      />
       <p>Account</p>
+      <Footer />
     </>
   );
 }

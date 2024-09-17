@@ -2,6 +2,7 @@ import Helmet from "react-helmet";
 import "../styles/Login.css";
 import { useState } from "react";
 import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 function Login() {
   const [type, setType] = useState("password");
@@ -55,6 +56,7 @@ function Login() {
                     </label>
                     <input
                       type="email"
+                      name="email"
                       className="form-control"
                       id="emailInput"
                     />
@@ -66,6 +68,7 @@ function Login() {
                     <div className="input-group">
                       <input
                         type={type}
+                        name="password"
                         className="form-control border-0"
                         id="passwordInput"
                       />
@@ -86,6 +89,7 @@ function Login() {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 }

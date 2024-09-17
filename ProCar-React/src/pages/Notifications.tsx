@@ -1,5 +1,6 @@
 import Helmet from "react-helmet";
 import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 function Notifications() {
   return (
@@ -9,6 +10,7 @@ function Notifications() {
       </Helmet>
       <Header />
       <p>Meldingen</p>
+      <Footer />
     </>
   );
 }

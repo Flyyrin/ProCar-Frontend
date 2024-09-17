@@ -1,17 +1,21 @@
 @media (min-width: 1400px) {
   .navbar-container {
-    width: 50%;
+    width: 65%;
   }
 }
 
-.nav-link.underline {
+.nav-link.underline,
+.dropdown-menu .dropdown-item {
   border-top: 4px solid transparent;
   border-bottom: 4px solid transparent;
 }
 .nav-link.underline:hover,
-.nav-link.underline.active {
+.nav-link.underline.active,
+.dropdown-menu .dropdown-item.active,
+.dropdown-menu .dropdown-item:hover {
   border-top: 4px solid transparent;
   border-bottom: 4px solid #5033b6;
+  color: #5033b6 !important;
 }
 
 .btn:focus,
@@ -36,7 +40,7 @@ input:focus {
   right: 0;
 }
 
-body {
+#root {
   background-color: #e9ecef;
 }
 
@@ -51,6 +55,15 @@ input:focus {
   transition: border-color 0.15s ease-in-out;
 }
 
+.input-group.is-invalid {
+  border-color: #dc3545;
+}
+
 .input-group:focus-within {
   border-color: #5033b6;
+}
+
+.link-footer {
+  color: #5033b6;
+  text-decoration: none;
 }

@@ -2,16 +2,14 @@ import { NavLink } from "react-router-dom";
 import procarLogo from "/procar.png";
 import indicator from "../assets/indicator.svg";
 
-interface NotificationStatus {
+interface HeaderStatus {
+  signedIn?: boolean;
+  name?: string;
   messages?: boolean;
   notifications?: boolean;
 }
 
-function Header({
-  notificationStatus = {},
-}: {
-  notificationStatus?: NotificationStatus;
-}) {
+function Header({ headerStatus = {} }: { headerStatus?: HeaderStatus }) {
   return (
     <header>
       <nav className="navbar navbar-expand navbar-light bg-white py-0 border-bottom border-2">
@@ -35,7 +33,7 @@ function Header({
                 >
                   <div className="d-flex align-items-center">
                     <i className="bi bi-chat h5 mb-0 me-1 position-relative">
-                      {notificationStatus.messages && (
+                      {headerStatus.messages && (
                         <img
                           src={indicator}
                           alt="indicator"
@@ -57,7 +55,7 @@ function Header({
                 >
                   <div className="d-flex align-items-center">
                     <i className="bi bi-bell h5 mb-0 me-1 position-relative">
-                      {notificationStatus.notifications && (
+                      {headerStatus.notifications && (
                         <img
                           src={indicator}
                           alt="indicator"
@@ -71,29 +69,73 @@ function Header({
                   </div>
                 </NavLink>
               </li>
-              <li className="nav-item my-auto">
-                <NavLink
-                  className="nav-link my-0 text-dark underline"
-                  aria-current="page"
-                  to="/account"
-                >
-                  <div className="d-flex align-items-center">
-                    <i className="bi bi-person h5 mb-0 me-1"></i>
-                    <span className="align-middle d-none d-md-flex">
-                      Account
-                    </span>
+
+              {headerStatus.signedIn ? (
+                <li className="nav-item dropdown">
+                  <NavLink
+                    className="nav-link my-0 text-dark underline"
+                    to="/account"
+                    id="navbarDropdownMenuLink"
+                    data-bs-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                  >
+                    <div className="d-flex align-items-center">
+                      <i className="bi bi-person h5 mb-0 me-1"></i>
+                      <span className="align-middle d-none d-md-flex me-1">
+                        {headerStatus.name}
+                      </span>
+                      <i className="bi bi-chevron-down mb-0"></i>
+                    </div>
+                  </NavLink>
+                  <div
+                    className="dropdown-menu dropdown-menu-end dropdown-menu-lg-start px-2"
+                    aria-labelledby="navbarDropdownMenuLink"
+                  >
+                    <a
+                      className="dropdown-item bg-white mb-1"
+                      href="/account/ads"
+                    >
+                      Mijn advertenties
+                    </a>
+                    <a
+                      className="dropdown-item bg-white mb-1"
+                      href="/account/favorites"
+                    >
+                      Mijn favorieten
+                    </a>
+                    <a
+                      className="dropdown-item bg-white mb-1"
+                      href="/account/profile"
+                    >
+                      Mijn profiel
+                    </a>
+                    <a className="dropdown-item bg-white mb-1" href="/logout">
+                      Uitloggen
+                    </a>
                   </div>
-                </NavLink>
-              </li>
+                </li>
+              ) : (
+                <li className="nav-item my-auto">
+                  <NavLink
+                    className="nav-link my-0 text-dark underline"
+                    aria-current="page"
+                    to="/login"
+                  >
+                    <div className="d-flex align-items-center">
+                      <i className="bi bi-person h5 mb-0 me-1"></i>
+                      <span className="align-middle d-none d-md-flex">
+                        Inloggen
+                      </span>
+                    </div>
+                  </NavLink>
+                </li>
+              )}
               <li className="nav-item my-auto">
-                <a
-                  className="nav-link my-0 py-0"
-                  aria-current="page"
-                  href="sell"
-                >
+                <a className="nav-link my-0 py-0" href="/sell">
                   <div className="d-flex align-items-center btn btn-sm text-white mb-xs-2">
                     <i className="bi bi-car-front h5 mb-0"></i>
-                    <span className="align-middle ms-2 d-none d-md-flex">
+                    <span className="align-middle ms-2 d-none d-lg-flex">
                       Verkoop een auto
                     </span>
                   </div>
