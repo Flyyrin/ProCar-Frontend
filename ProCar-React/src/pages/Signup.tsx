@@ -272,7 +272,11 @@ function Signup() {
                     <label htmlFor="password-confirm" className="form-label">
                       Herhaal wachtwoord
                     </label>
-                    <div className="input-group">
+                    <div
+                      className={`input-group ${
+                        passwordConfirmInvalid && "is-invalid"
+                      }`}
+                    >
                       <input
                         type={type2}
                         name="password-confirm"
