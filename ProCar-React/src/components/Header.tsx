@@ -1,6 +1,7 @@
 import { NavLink } from "react-router-dom";
 import procarLogo from "/procar.png";
 import indicator from "../assets/indicator.svg";
+import "../styles/Header.css";
 
 interface HeaderStatus {
   signedIn?: boolean;
@@ -92,25 +93,19 @@ function Header({ headerStatus = {} }: { headerStatus?: HeaderStatus }) {
                     className="dropdown-menu dropdown-menu-end dropdown-menu-lg-start px-2"
                     aria-labelledby="navbarDropdownMenuLink"
                   >
-                    <a
-                      className="dropdown-item bg-white mb-1"
-                      href="/account/ads"
-                    >
+                    <a className="dropdown-item mb-1" href="/account/vehicles">
+                      Mijn voertuigen
+                    </a>
+                    <a className="dropdown-item mb-1" href="/account/ads">
                       Mijn advertenties
                     </a>
-                    <a
-                      className="dropdown-item bg-white mb-1"
-                      href="/account/favorites"
-                    >
+                    <a className="dropdown-item mb-1" href="/account/favorites">
                       Mijn favorieten
                     </a>
-                    <a
-                      className="dropdown-item bg-white mb-1"
-                      href="/account/profile"
-                    >
+                    <a className="dropdown-item mb-1" href="/account/profile">
                       Mijn profiel
                     </a>
-                    <a className="dropdown-item bg-white mb-1" href="/logout">
+                    <a className="dropdown-item mb-1" href="/logout">
                       Uitloggen
                     </a>
                   </div>

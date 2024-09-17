@@ -25,10 +25,10 @@ function Login() {
       </Helmet>
       <Header />
 
-      <div className="container mt-5">
-        <h3 className="fw-bold my-5 text-center">Inloggen</h3>
+      <div className="container mt-4">
+        <h3 className="fw-bold my-4 text-md-center ps-2 ps-md-0">Inloggen</h3>
         <div className="row d-flex justify-content-center">
-          <div className="col-md-6">
+          <div className="col-lg-6 col-md-10">
             <div className="card">
               <div className="card-header bg-white px-0 pb-0 pt-3">
                 <ul className="nav nav-tabs justify-content-center border-bottom-0">

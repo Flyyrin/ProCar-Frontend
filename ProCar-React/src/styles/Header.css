@@ -1,0 +1,25 @@
+@media (min-width: 1400px) {
+  .navbar-container {
+    width: 65%;
+  }
+}
+
+.nav-link.underline,
+.dropdown-menu .dropdown-item {
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+}
+.nav-link.underline:hover,
+.nav-link.underline.active,
+.dropdown-menu .dropdown-item.active,
+.dropdown-menu .dropdown-item:hover {
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid #5033b6;
+  color: #5033b6 !important;
+  background-color: #fff;
+}
+
+.indicator {
+  top: 0;
+  right: 0;
+}

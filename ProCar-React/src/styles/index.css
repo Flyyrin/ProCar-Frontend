@@ -1,23 +1,3 @@
-@media (min-width: 1400px) {
-  .navbar-container {
-    width: 65%;
-  }
-}
-
-.nav-link.underline,
-.dropdown-menu .dropdown-item {
-  border-top: 4px solid transparent;
-  border-bottom: 4px solid transparent;
-}
-.nav-link.underline:hover,
-.nav-link.underline.active,
-.dropdown-menu .dropdown-item.active,
-.dropdown-menu .dropdown-item:hover {
-  border-top: 4px solid transparent;
-  border-bottom: 4px solid #5033b6;
-  color: #5033b6 !important;
-}
-
 .btn:focus,
 .btn:active,
 input:focus {
@@ -35,9 +15,16 @@ input:focus {
   color: #fff;
 }
 
-.indicator {
-  top: 0;
-  right: 0;
+.btn-outline {
+  background-color: transparent;
+  color: #5033b6;
+  border: 1px solid #5033b6;
+  text-decoration: none;
+}
+
+.btn-outline:hover {
+  background-color: #e9ecef;
+  color: #5033b6;
 }
 
 #root {
@@ -66,4 +53,24 @@ input:focus {
 .link-footer {
   color: #5033b6;
   text-decoration: none;
+}
+
+.list-group-item:hover {
+  background-color: #f0ecff;
+}
+
+.notification-image-container {
+  width: 60px;
+  height: 60px;
+  overflow: hidden;
+  justify-content: center;
+  display: flex;
+}
+
+.list-group-item .dropdown-menu .dropdown-item.active,
+.list-group-item .dropdown-menu .dropdown-item:hover {
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  color: #000000 !important;
+  background-color: #f0ecff;
 }

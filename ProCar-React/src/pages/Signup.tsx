@@ -108,10 +108,18 @@ function Signup() {
         <title>Account Aanmaken - ProCar</title>
       </Helmet>
       <Header />
-      <div className="container mt-5">
-        <h3 className="fw-bold my-5 text-center">Account aanmaken</h3>
+      <div className="container mt-4">
+        <h3 className="fw-bold mt-4 mb-3 text-md-center ps-2 ps-md-0">
+          Account aanmaken
+        </h3>
+        <p className="text-md-center ps-2 ps-md-0 mb-3">
+          Heb je al een account?{" "}
+          <a href="/login" className="link-footer">
+            Log dan nu in
+          </a>
+        </p>
         <div className="row d-flex justify-content-center">
-          <div className="col-md-6">
+          <div className="col-lg-6 col-md-10">
             <div className="card">
               <div className="card-header bg-white px-0 pb-0 pt-3">
                 <ul className="nav nav-tabs justify-content-center border-bottom-0">
@@ -289,9 +297,14 @@ function Signup() {
                       Vul tweemaal hetzelfde wachtwoord in.
                     </div>
                   </div>
-                  <button type="submit" className="btn w-100">
-                    Inloggen
-                  </button>
+                  <div className="d-flex justify-content-between">
+                    <a className="btn w-100 me-1 btn-outline" href="/login">
+                      Annuleren
+                    </a>
+                    <button type="submit" className="btn w-100 ms-1">
+                      Maak account aan
+                    </button>
+                  </div>
                 </form>
               </div>
             </div>
