@@ -13,3 +13,7 @@
 .is-invalid {
   background-image: none !important;
 }
+
+.checkbox {
+  color: #6946e8;
+}

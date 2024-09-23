@@ -9,9 +9,7 @@ function NotFound() {
       <Helmet>
         <title>Pagina niet gevonden - ProCar</title>
       </Helmet>
-      <Header
-        headerStatus={{ messages: true, signedIn: true, name: "Rafael.L" }}
-      />
+      <Header />
       <div className="container-fluid pt-5 text-center">
         <h3 className="fw-bold my-5">We konden deze pagina niet vinden.</h3>
         <div className="row d-flex justify-content-center">

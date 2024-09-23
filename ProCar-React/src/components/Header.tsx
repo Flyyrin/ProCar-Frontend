@@ -1,16 +1,19 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
 import procarLogo from "/procar.png";
 import indicator from "../assets/indicator.svg";
 import "../styles/Header.css";
 
-interface HeaderStatus {
-  signedIn?: boolean;
-  name?: string;
-  messages?: boolean;
-  notifications?: boolean;
-}
+function Header() {
+  const navigate = useNavigate();
+  const token = Cookies.get("accessToken");
 
-function Header({ headerStatus = {} }: { headerStatus?: HeaderStatus }) {
+  const handleLogout = () => {
+    Cookies.remove("accessToken");
+    Cookies.remove("refreshToken");
+    navigate("/", {});
+  };
+
   return (
     <header>
       <nav className="navbar navbar-expand navbar-light bg-white py-0 border-bottom border-2">
@@ -34,7 +37,7 @@ function Header({ headerStatus = {} }: { headerStatus?: HeaderStatus }) {
                 >
                   <div className="d-flex align-items-center">
                     <i className="bi bi-chat h5 mb-0 me-1 position-relative">
-                      {headerStatus.messages && (
+                      {true && (
                         <img
                           src={indicator}
                           alt="indicator"
@@ -56,7 +59,7 @@ function Header({ headerStatus = {} }: { headerStatus?: HeaderStatus }) {
                 >
                   <div className="d-flex align-items-center">
                     <i className="bi bi-bell h5 mb-0 me-1 position-relative">
-                      {headerStatus.notifications && (
+                      {true && (
                         <img
                           src={indicator}
                           alt="indicator"
@@ -71,7 +74,7 @@ function Header({ headerStatus = {} }: { headerStatus?: HeaderStatus }) {
                 </NavLink>
               </li>
 
-              {headerStatus.signedIn ? (
+              {!!token ? (
                 <li className="nav-item dropdown">
                   <NavLink
                     className="nav-link my-0 text-dark underline"
@@ -84,7 +87,7 @@ function Header({ headerStatus = {} }: { headerStatus?: HeaderStatus }) {
                     <div className="d-flex align-items-center">
                       <i className="bi bi-person h5 mb-0 me-1"></i>
                       <span className="align-middle d-none d-md-flex me-1">
-                        {headerStatus.name}
+                        Naam Test
                       </span>
                       <i className="bi bi-chevron-down mb-0"></i>
                     </div>
@@ -105,7 +108,7 @@ function Header({ headerStatus = {} }: { headerStatus?: HeaderStatus }) {
                     <a className="dropdown-item mb-1" href="/account/profile">
                       Mijn profiel
                     </a>
-                    <a className="dropdown-item mb-1" href="/logout">
+                    <a className="dropdown-item mb-1" onClick={handleLogout}>
                       Uitloggen
                     </a>
                   </div>

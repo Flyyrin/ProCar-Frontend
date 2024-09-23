@@ -8,9 +8,7 @@ function Account() {
       <Helmet>
         <title>Mijn Account - ProCar</title>
       </Helmet>
-      <Header
-        headerStatus={{ messages: true, signedIn: true, name: "Rafael.L" }}
-      />
+      <Header />
       <p>Account</p>
       <Footer />
     </>

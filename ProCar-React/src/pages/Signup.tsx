@@ -156,7 +156,7 @@ function Signup() {
         </h3>
         <p className="text-md-center ps-2 ps-md-0 mb-3">
           Heb je al een account?{" "}
-          <a href="/login" className="link-footer">
+          <a href="/login" className="link">
             Log dan nu in
           </a>
         </p>
@@ -192,16 +192,16 @@ function Signup() {
               <div className="card-body">
                 <form onSubmit={handleFormSubmit} noValidate autoComplete="off">
                   <div className="mb-3">
-                    <label htmlFor="name" className="form-label">
+                    <label htmlFor="procarID" className="form-label">
                       Je naam
                     </label>
                     <input
                       type="text"
-                      name="username"
-                      autoComplete="name"
+                      name="procarID"
+                      autoComplete="off"
                       spellCheck="false"
                       className={`form-control ${nameInvalid && "is-invalid"}`}
-                      id="name"
+                      id="procarID"
                       aria-describedby="nameHelp"
                       onChange={handleNameChange}
                     />
@@ -247,7 +247,7 @@ function Signup() {
                         : "Geen geldige-mailadres ingevuld."}
                     </div>
                   </div>
-                  <div className="mb-4">
+                  <div className="mb-3">
                     <label htmlFor="new-password" className="form-label">
                       Wachtwoord
                     </label>

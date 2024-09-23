@@ -4,7 +4,7 @@ import Footer from "../components/Footer";
 function Home() {
   return (
     <>
-      <Header headerStatus={{ messages: true, notifications: true }} />
+      <Header />
       <p>Home</p>
       <Footer />
     </>
