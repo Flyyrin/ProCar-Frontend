@@ -11,14 +11,14 @@ function Header() {
   const handleLogout = () => {
     Cookies.remove("accessToken");
     Cookies.remove("refreshToken");
-    navigate("/", {});
+    window.location.href = "/";
   };
 
   return (
     <header>
       <nav className="navbar navbar-expand navbar-light bg-white py-0 border-bottom border-2">
         <div className="container-md navbar-container mx-auto">
-          <a className="navbar-brand" href="/">
+          <NavLink className="navbar-brand" to="/">
             <img
               src={procarLogo}
               alt=""
@@ -26,7 +26,7 @@ function Header() {
               className="d-inline-block align-middle me-1"
             />
             <span className="navbar-brand mb-0 h1">ProCar</span>
-          </a>
+          </NavLink>
           <div className="collapse navbar-collapse">
             <ul className="navbar-nav ms-auto">
               <li className="nav-item my-auto">
@@ -96,18 +96,27 @@ function Header() {
                     className="dropdown-menu dropdown-menu-end dropdown-menu-lg-start px-2"
                     aria-labelledby="navbarDropdownMenuLink"
                   >
-                    <a className="dropdown-item mb-1" href="/account/vehicles">
+                    <NavLink
+                      className="dropdown-item mb-1"
+                      to="/account/vehicles"
+                    >
                       Mijn voertuigen
-                    </a>
-                    <a className="dropdown-item mb-1" href="/account/ads">
+                    </NavLink>
+                    <NavLink className="dropdown-item mb-1" to="/account/ads">
                       Mijn advertenties
-                    </a>
-                    <a className="dropdown-item mb-1" href="/account/favorites">
+                    </NavLink>
+                    <NavLink
+                      className="dropdown-item mb-1"
+                      to="/account/favorites"
+                    >
                       Mijn favorieten
-                    </a>
-                    <a className="dropdown-item mb-1" href="/account/profile">
+                    </NavLink>
+                    <NavLink
+                      className="dropdown-item mb-1"
+                      to="/account/profile"
+                    >
                       Mijn profiel
-                    </a>
+                    </NavLink>
                     <a className="dropdown-item mb-1" onClick={handleLogout}>
                       Uitloggen
                     </a>
@@ -130,14 +139,14 @@ function Header() {
                 </li>
               )}
               <li className="nav-item my-auto">
-                <a className="nav-link my-0 py-0" href="/sell">
+                <NavLink className="nav-link my-0 py-0" to="/sell">
                   <div className="d-flex align-items-center btn btn-sm text-white mb-xs-2">
                     <i className="bi bi-car-front h5 mb-0"></i>
                     <span className="align-middle ms-2 d-none d-lg-flex">
                       Verkoop een auto
                     </span>
                   </div>
-                </a>
+                </NavLink>
               </li>
             </ul>
           </div>

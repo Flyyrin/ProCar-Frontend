@@ -1,7 +1,7 @@
 import Helmet from "react-helmet";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { useLocation, useNavigate } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import "../styles/Login.css";
 import { useState } from "react";
 import Header from "../components/Header";
@@ -47,8 +47,10 @@ function Login() {
 
   const [invalidLogin, setInvalidLogin] = useState(false);
   const [apiError, setApiError] = useState(false);
+  const [loading, setLoading] = useState(false);
   const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     navigate("/login", { replace: true });
+    setLoading(true);
     event.preventDefault();
     setApiError(false);
     setInvalidLogin(false);
@@ -57,16 +59,22 @@ function Login() {
       .then(function (response) {
         if (response.status === 200) {
           Cookies.set("accessToken", response.data.accessToken);
-          Cookies.set("refreshToken", response.data.refreshToken);
+          rememberMe && Cookies.set("refreshToken", response.data.refreshToken);
           navigate("/", {});
         }
       })
       .catch(function (error) {
-        if (error.response.status === 401) {
-          setInvalidLogin(true);
+        if (error.response && error.response.status) {
+          if (error.response.status === 401) {
+            setInvalidLogin(true);
+          } else {
+            setApiError(true);
+          }
         } else {
           setApiError(true);
         }
+        setLoading(false);
+        window.scrollTo(0, 0);
       });
   };
 
@@ -109,18 +117,18 @@ function Login() {
               <div className="card-header bg-white px-0 pb-0 pt-3">
                 <ul className="nav nav-tabs justify-content-center border-bottom-0">
                   <li className="nav-item">
-                    <a
+                    <NavLink
                       className="nav-link active text-dark"
                       aria-current="page"
-                      href="/login"
+                      to="/login"
                     >
                       Inloggen
-                    </a>
+                    </NavLink>
                   </li>
                   <li className="nav-item">
-                    <a className="nav-link text-secondary" href="/signup">
+                    <NavLink className="nav-link text-secondary" to="/signup">
                       Account aanmaken
-                    </a>
+                    </NavLink>
                   </li>
                 </ul>
               </div>
@@ -170,13 +178,28 @@ function Login() {
                       } me-2 h5 mb-0 checkbox`}
                     ></i>
                     <span className="align-middle">Ingelogd blijven</span>
-                    <a href="/reset-password" className="link ms-auto">
+                    <NavLink to="/reset-password" className="link ms-auto">
                       Wachtwoord vergeten?
-                    </a>
+                    </NavLink>
                   </div>
-                  <button type="submit" className="btn w-100">
-                    Inloggen
-                  </button>
+                  <div className="position-relative">
+                    <button
+                      type="submit"
+                      className={`btn w-100 ${loading && "disabled"}`}
+                    >
+                      <span className={`${loading && "invisible"}`}>
+                        Inloggen
+                      </span>
+                    </button>
+                    {loading && (
+                      <div className="position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center text-white">
+                        <div
+                          className="spinner-border spinner-border-sm position-absolute"
+                          role="status"
+                        />
+                      </div>
+                    )}
+                  </div>
                 </form>
               </div>
             </div>

@@ -1,6 +1,6 @@
 import Helmet from "react-helmet";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import "../styles/Login.css";
 import { useState } from "react";
 import Header from "../components/Header";
@@ -103,6 +103,7 @@ function Signup() {
 
   const [emailTaken, setEmailTaken] = useState(false);
   const [apiError, setApiError] = useState(false);
+  const [loading, setLoading] = useState(false);
   const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     const tempNameInvalid = !nameValidationRegex.test(nameValue);
     setNameInvalid(tempNameInvalid);
@@ -124,6 +125,7 @@ function Signup() {
       !tempPasswordInvalid &&
       !tempPasswordConfirmInvalid
     ) {
+      setLoading(true);
       axios
         .post("https://localhost:7022/register", formData)
         .then(function (response) {
@@ -134,12 +136,17 @@ function Signup() {
           }
         })
         .catch(function (error) {
-          console.log(error.response.status);
-          if (error.response.status === 400) {
-            setEmailTaken(true);
+          if (error.response && error.response.status) {
+            if (error.response.status === 400) {
+              setEmailTaken(true);
+            } else {
+              setApiError(true);
+            }
           } else {
             setApiError(true);
           }
+          setLoading(false);
+          window.scrollTo(0, 0);
         });
     }
   };
@@ -156,9 +163,9 @@ function Signup() {
         </h3>
         <p className="text-md-center ps-2 ps-md-0 mb-3">
           Heb je al een account?{" "}
-          <a href="/login" className="link">
+          <NavLink to="/login" className="link">
             Log dan nu in
-          </a>
+          </NavLink>
         </p>
         <div className="row d-flex justify-content-center">
           <div className="col-lg-6 col-md-10">
@@ -174,18 +181,18 @@ function Signup() {
               <div className="card-header bg-white px-0 pb-0 pt-3">
                 <ul className="nav nav-tabs justify-content-center border-bottom-0">
                   <li className="nav-item">
-                    <a
+                    <NavLink
                       className="nav-link text-secondary"
                       aria-current="page"
-                      href="/login"
+                      to="/login"
                     >
                       Inloggen
-                    </a>
+                    </NavLink>
                   </li>
                   <li className="nav-item">
-                    <a className="nav-link active text-dark" href="/signup">
+                    <NavLink className="nav-link active text-dark" to="/signup">
                       Account aanmaken
-                    </a>
+                    </NavLink>
                   </li>
                 </ul>
               </div>
@@ -354,12 +361,27 @@ function Signup() {
                     </div>
                   </div>
                   <div className="d-flex justify-content-between">
-                    <a className="btn w-100 me-1 btn-outline" href="/login">
+                    <NavLink className="btn w-100 me-1 btn-outline" to="/login">
                       Annuleren
-                    </a>
-                    <button type="submit" className="btn w-100 ms-1">
-                      Maak account aan
-                    </button>
+                    </NavLink>
+                    <div className="position-relative ms-1 w-100">
+                      <button
+                        type="submit"
+                        className={`btn w-100 ${loading && "disabled"}`}
+                      >
+                        <span className={`${loading && "invisible"}`}>
+                          Maak account aan
+                        </span>
+                      </button>
+                      {loading && (
+                        <div className="position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center text-white">
+                          <div
+                            className="spinner-border spinner-border-sm position-absolute"
+                            role="status"
+                          />
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </form>
               </div>

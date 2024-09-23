@@ -1,3 +1,5 @@
+import { NavLink } from "react-router-dom";
+
 function timeAgo(timestamp: string | number): string {
   const now = new Date();
   const differenceInSeconds = Math.floor(
@@ -54,12 +56,12 @@ function Notification({
             <small>{timeAgo(notificationStatus.timestamp)}</small>
           </p>
           <p className="mb-0">{notificationStatus.message}</p>
-          <a
+          <NavLink
             className="mb-0 btn-outline border-0"
-            href={notificationStatus.source}
+            to={`${notificationStatus.source}`}
           >
             <strong className="">{notificationStatus.button}</strong>
-          </a>
+          </NavLink>
         </div>
         <div className="ms-auto d-flex align-items-center">
           <i
