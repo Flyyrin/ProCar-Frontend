@@ -1,10 +1,20 @@
 import Helmet from "react-helmet";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import "../styles/Login.css";
 import { useState } from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import Alert from "../components/Alert";
 
 function Signup() {
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
+
   const [type, setType] = useState("password");
   const [label, setLabel] = useState("Toon");
 
@@ -31,6 +41,14 @@ function Signup() {
     }
   };
 
+  const handleFormChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
   const [nameValue, setNameValue] = useState("");
   const [nameInvalid, setNameInvalid] = useState(false);
   const maxNameLength = 20;
@@ -41,6 +59,7 @@ function Signup() {
     const value = event.target.value;
     setNameValue(value);
     setNameInvalid(!nameValidationRegex.test(value));
+    handleFormChange(event);
   };
 
   const [emailValue, setEmailValue] = useState("");
@@ -49,9 +68,11 @@ function Signup() {
     /^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setEmailTaken(false);
     const value = event.target.value;
     setEmailValue(value);
     setEmailInvalid(!emailValidationRegex.test(value));
+    handleFormChange(event);
   };
 
   const [passwordValue, setPasswordValue] = useState("");
@@ -67,6 +88,7 @@ function Signup() {
     setPasswordInvalid(!passwordValidationRegex.test(value));
 
     setPasswordConfirmInvalid(passwordConfirmValue != value);
+    handleFormChange(event);
   };
 
   const [passwordConfirmValue, setPasswordConfirmValue] = useState("");
@@ -79,7 +101,9 @@ function Signup() {
     setPasswordConfirmInvalid(value != passwordValue);
   };
 
-  const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const [emailTaken, setEmailTaken] = useState(false);
+  const [apiError, setApiError] = useState(false);
+  const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     const tempNameInvalid = !nameValidationRegex.test(nameValue);
     setNameInvalid(tempNameInvalid);
 
@@ -92,13 +116,31 @@ function Signup() {
     const tempPasswordConfirmInvalid = passwordConfirmValue != passwordValue;
     setPasswordConfirmInvalid(tempPasswordConfirmInvalid);
 
+    event.preventDefault();
+    setApiError(false);
     if (
-      tempNameInvalid ||
-      tempEmailInvalid ||
-      tempPasswordInvalid ||
-      tempPasswordConfirmInvalid
+      !tempNameInvalid &&
+      !tempEmailInvalid &&
+      !tempPasswordInvalid &&
+      !tempPasswordConfirmInvalid
     ) {
-      event.preventDefault();
+      axios
+        .post("https://localhost:7022/register", formData)
+        .then(function (response) {
+          if (response.status === 200) {
+            navigate("/login", {
+              state: { account_created: true },
+            });
+          }
+        })
+        .catch(function (error) {
+          console.log(error.response.status);
+          if (error.response.status === 400) {
+            setEmailTaken(true);
+          } else {
+            setApiError(true);
+          }
+        });
     }
   };
 
@@ -120,6 +162,14 @@ function Signup() {
         </p>
         <div className="row d-flex justify-content-center">
           <div className="col-lg-6 col-md-10">
+            {apiError && (
+              <Alert
+                alertStatus={{
+                  type: "danger",
+                  message: "Er is iets mis gegaan, probeer het later nog eens.",
+                }}
+              />
+            )}
             <div className="card">
               <div className="card-header bg-white px-0 pb-0 pt-3">
                 <ul className="nav nav-tabs justify-content-center border-bottom-0">
@@ -147,7 +197,7 @@ function Signup() {
                     </label>
                     <input
                       type="text"
-                      name="name"
+                      name="username"
                       autoComplete="name"
                       spellCheck="false"
                       className={`form-control ${nameInvalid && "is-invalid"}`}
@@ -178,19 +228,23 @@ function Signup() {
                     </label>
                     <input
                       type="text"
-                      name="hfhffh"
+                      name="email"
                       autoComplete="off"
-                      className={`form-control ${emailInvalid && "is-invalid"}`}
+                      className={`form-control ${
+                        emailInvalid || emailTaken ? "is-invalid" : ""
+                      }`}
                       id="email"
                       onChange={handleEmailChange}
                     />
                     <div
                       className={`invalid-feedback ${
-                        emailInvalid && "d-block"
+                        emailInvalid || emailTaken ? "d-block" : ""
                       }`}
                     >
-                      <i className="bi bi-exclamation-triangle"></i> Geen geldig
-                      e-mailadres ingevuld.
+                      <i className="bi bi-exclamation-triangle"></i>{" "}
+                      {emailTaken
+                        ? "Dit e-mailadres is al in gebruik."
+                        : "Geen geldige-mailadres ingevuld."}
                     </div>
                   </div>
                   <div className="mb-4">
@@ -204,7 +258,7 @@ function Signup() {
                     >
                       <input
                         type={type}
-                        name="new-password"
+                        name="password"
                         autoComplete="new-password"
                         aria-autocomplete="list"
                         minLength={8}
@@ -238,9 +292,7 @@ function Signup() {
                               : "bi-check-circle"
                           } h5 mb-0 me-1`}
                         ></i>
-                        <span className="align-middle d-none d-md-flex">
-                          Minimaal 8 tekens
-                        </span>
+                        <span className="align-middle">Minimaal 8 tekens</span>
                       </div>
                       <div className="d-flex align-items-center mt-1">
                         <i
@@ -250,7 +302,7 @@ function Signup() {
                               : "bi-check-circle"
                           } h5 mb-0 me-1`}
                         ></i>
-                        <span className="align-middle d-none d-md-flex">
+                        <span className="align-middle">
                           Ten minste één cijfer
                         </span>
                       </div>
@@ -262,7 +314,7 @@ function Signup() {
                               : "bi-check-circle"
                           } h5 mb-0 me-1`}
                         ></i>
-                        <span className="align-middle d-none d-md-flex">
+                        <span className="align-middle">
                           Ten minste één hoofdletter
                         </span>
                       </div>

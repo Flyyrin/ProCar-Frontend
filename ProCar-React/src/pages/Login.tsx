@@ -1,10 +1,15 @@
 import Helmet from "react-helmet";
+import { useLocation } from "react-router-dom";
 import "../styles/Login.css";
 import { useState } from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import Alert from "../components/Alert";
 
 function Login() {
+  const location = useLocation();
+  const accountCreated = location.state?.account_created;
+
   const [type, setType] = useState("password");
   const [label, setLabel] = useState("Toon");
 
@@ -29,6 +34,14 @@ function Login() {
         <h3 className="fw-bold my-4 text-md-center ps-2 ps-md-0">Inloggen</h3>
         <div className="row d-flex justify-content-center">
           <div className="col-lg-6 col-md-10">
+            {accountCreated && (
+              <Alert
+                alertStatus={{
+                  type: "success",
+                  message: "Account met succes aangemaakt.",
+                }}
+              />
+            )}
             <div className="card">
               <div className="card-header bg-white px-0 pb-0 pt-3">
                 <ul className="nav nav-tabs justify-content-center border-bottom-0">
