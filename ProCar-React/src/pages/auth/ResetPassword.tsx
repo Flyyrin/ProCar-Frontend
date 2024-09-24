@@ -1,28 +1,17 @@
 import Helmet from "react-helmet";
 import axios from "axios";
-import { NavLink, useNavigate } from "react-router-dom";
-import Cookies from "js-cookie";
 import "../../styles/Login.css";
 import { useState, useEffect } from "react";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import Alert from "../../components/Alert";
 
-function Signup() {
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const token = Cookies.get("accessToken");
-    if (token) {
-      navigate("/");
-    }
-  }, [navigate]);
-
+function ResetPassword() {
+  const queryParameters = new URLSearchParams(window.location.search);
   const [formData, setFormData] = useState({
-    procarID: "",
-    UserName: "",
-    email: "",
-    password: "",
+    email: `${queryParameters.get("email")}`,
+    resetCode: `${queryParameters.get("resetCode")}`,
+    newPassword: "",
   });
 
   const [type, setType] = useState("password");
@@ -51,40 +40,6 @@ function Signup() {
     }
   };
 
-  const handleFormChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-
-  const [nameValue, setNameValue] = useState("");
-  const [nameInvalid, setNameInvalid] = useState(false);
-  const maxNameLength = 20;
-  const nameValidationRegex =
-    /^(?!.*  )(?!.*[^a-zA-Z0-9\-_&. ])[a-zA-Z0-9\-_&. ]{1,20}$/;
-
-  const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    setNameValue(value);
-    setNameInvalid(!nameValidationRegex.test(value));
-    handleFormChange(event);
-  };
-
-  const [emailValue, setEmailValue] = useState("");
-  const [emailInvalid, setEmailInvalid] = useState(false);
-  const emailValidationRegex =
-    /^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
-
-  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEmailTaken(false);
-    const value = event.target.value;
-    setEmailValue(value);
-    setEmailInvalid(!emailValidationRegex.test(value));
-    handleFormChange(event);
-  };
-
   const [passwordValue, setPasswordValue] = useState("");
   const [passwordInvalid, setPasswordInvalid] = useState(false);
   const passwordValidationRegex = /^(?=.*[A-Z])(?=.*\d)[^\s]{8,64}$/;
@@ -111,16 +66,19 @@ function Signup() {
     setPasswordConfirmInvalid(value != passwordValue);
   };
 
-  const [emailTaken, setEmailTaken] = useState(false);
+  const handleFormChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
   const [apiError, setApiError] = useState(false);
+  const [invalidCode, setInvalidCode] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
   const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    const tempNameInvalid = !nameValidationRegex.test(nameValue);
-    setNameInvalid(tempNameInvalid);
-
-    const tempEmailInvalid = !emailValidationRegex.test(emailValue);
-    setEmailInvalid(tempEmailInvalid);
-
     const tempPasswordInvalid = !passwordValidationRegex.test(passwordValue);
     setPasswordInvalid(tempPasswordInvalid);
 
@@ -129,30 +87,28 @@ function Signup() {
 
     event.preventDefault();
     setApiError(false);
-    if (
-      !tempNameInvalid &&
-      !tempEmailInvalid &&
-      !tempPasswordInvalid &&
-      !tempPasswordConfirmInvalid
-    ) {
+    if (!tempPasswordInvalid && !tempPasswordConfirmInvalid) {
       setLoading(true);
       axios
-        .post("https://localhost:7022/register", formData)
+        .post("https://localhost:7022/resetPassword", formData)
         .then(function (response) {
           if (response.status === 200) {
-            navigate("/login", {
-              state: { account_created: true },
-            });
+            setSuccess(true);
+            setApiError(false);
+            setLoading(false);
+            setInvalidCode(false);
           }
         })
         .catch(function (error) {
           if (error.response && error.response.status) {
             if (error.response.status === 400) {
-              setEmailTaken(true);
+              setInvalidCode(true);
             } else {
               setApiError(true);
+              setInvalidCode(false);
             }
           } else {
+            setInvalidCode(false);
             setApiError(true);
           }
           setLoading(false);
@@ -164,19 +120,14 @@ function Signup() {
   return (
     <>
       <Helmet>
-        <title>Account Aanmaken - ProCar</title>
+        <title>Wijzig Wachtwoord - ProCar</title>
       </Helmet>
       <Header />
+
       <div className="container mt-4">
-        <h3 className="fw-bold mt-4 mb-3 text-md-center ps-2 ps-md-0">
-          Account aanmaken
+        <h3 className="fw-bold my-4 text-md-center ps-2 ps-md-0">
+          Wachtwoord opnieuw in stellen
         </h3>
-        <p className="text-md-center ps-2 ps-md-0 mb-3">
-          Heb je al een account?{" "}
-          <NavLink to="/login" className="link">
-            Log dan nu in
-          </NavLink>
-        </p>
         <div className="row d-flex justify-content-center">
           <div className="col-lg-6 col-md-10">
             {apiError && (
@@ -187,82 +138,38 @@ function Signup() {
                 }}
               />
             )}
+            {invalidCode && (
+              <Alert
+                alertStatus={{
+                  type: "danger",
+                  message: `Het wachtwoord kon niet gewijzigd worden.
+                  `,
+                }}
+              />
+            )}
+            {success && (
+              <Alert
+                alertStatus={{
+                  type: "success",
+                  message: "Wachtwoord met succes gewijzigd.",
+                }}
+              />
+            )}
             <div className="card">
-              <div className="card-header bg-white px-0 pb-0 pt-3">
-                <ul className="nav nav-tabs justify-content-center border-bottom-0">
-                  <li className="nav-item">
-                    <NavLink
-                      className="nav-link text-secondary"
-                      aria-current="page"
-                      to="/login"
-                    >
-                      Inloggen
-                    </NavLink>
-                  </li>
-                  <li className="nav-item">
-                    <NavLink className="nav-link active text-dark" to="/signup">
-                      Account aanmaken
-                    </NavLink>
-                  </li>
-                </ul>
-              </div>
               <div className="card-body">
-                <form onSubmit={handleFormSubmit} noValidate autoComplete="off">
+                <form onSubmit={handleFormSubmit} noValidate>
                   <div className="mb-3">
-                    <label htmlFor="procarID" className="form-label">
-                      Je naam
-                    </label>
-                    <input
-                      type="text"
-                      name="procarID"
-                      autoComplete="off"
-                      spellCheck="false"
-                      className={`form-control ${nameInvalid && "is-invalid"}`}
-                      id="procarID"
-                      aria-describedby="nameHelp"
-                      onChange={handleNameChange}
-                    />
-                    <div
-                      id="nameHelp"
-                      className={`form-text ${
-                        maxNameLength - nameValue.length < 0 && "text-danger"
-                      }`}
-                    >
-                      {maxNameLength - nameValue.length < 0
-                        ? `${-(maxNameLength - nameValue.length)} tekens teveel`
-                        : `${maxNameLength - nameValue.length} tekens over.`}
-                    </div>
-                    <div
-                      className={`invalid-feedback ${nameInvalid && "d-block"}`}
-                    >
-                      <i className="bi bi-exclamation-triangle"></i> Geen
-                      geldige naam ingevuld.
-                    </div>
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="email" className="form-label">
+                    <label htmlFor="emailInput" className="form-label">
                       E-mailadres
                     </label>
                     <input
-                      type="text"
+                      type="email"
                       name="email"
-                      autoComplete="off"
-                      className={`form-control ${
-                        emailInvalid || emailTaken ? "is-invalid" : ""
-                      }`}
-                      id="email"
-                      onChange={handleEmailChange}
+                      className="form-control"
+                      id="emailInput"
+                      value={`${queryParameters.get("email")}`}
+                      disabled={true}
                     />
-                    <div
-                      className={`invalid-feedback ${
-                        emailInvalid || emailTaken ? "d-block" : ""
-                      }`}
-                    >
-                      <i className="bi bi-exclamation-triangle"></i>{" "}
-                      {emailTaken
-                        ? "Dit e-mailadres is al in gebruik."
-                        : "Geen geldige-mailadres ingevuld."}
-                    </div>
                   </div>
                   <div className="mb-3">
                     <label htmlFor="new-password" className="form-label">
@@ -275,7 +182,7 @@ function Signup() {
                     >
                       <input
                         type={type}
-                        name="password"
+                        name="newPassword"
                         autoComplete="new-password"
                         aria-autocomplete="list"
                         minLength={8}
@@ -284,6 +191,7 @@ function Signup() {
                         id="new-password"
                         aria-describedby="passwordHelp"
                         onChange={handlePasswordChange}
+                        disabled={success || invalidCode}
                       />
                       <span
                         className="input-group-text bg-white password-toggler border-0"
@@ -353,6 +261,7 @@ function Signup() {
                         className="form-control border-0"
                         id="password-confirm"
                         onChange={handlePasswordConfirmChange}
+                        disabled={success || invalidCode}
                       />
                       <span
                         className="input-group-text bg-white password-toggler border-0"
@@ -370,28 +279,25 @@ function Signup() {
                       Vul tweemaal hetzelfde wachtwoord in.
                     </div>
                   </div>
-                  <div className="d-flex justify-content-between">
-                    <NavLink className="btn w-100 me-1 btn-outline" to="/login">
-                      Annuleren
-                    </NavLink>
-                    <div className="position-relative ms-1 w-100">
-                      <button
-                        type="submit"
-                        className={`btn w-100 ${loading && "disabled"}`}
-                      >
-                        <span className={`${loading && "invisible"}`}>
-                          Maak account aan
-                        </span>
-                      </button>
-                      {loading && (
-                        <div className="position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center text-white">
-                          <div
-                            className="spinner-border spinner-border-sm position-absolute"
-                            role="status"
-                          />
-                        </div>
-                      )}
-                    </div>
+                  <div className="position-relative">
+                    <button
+                      type="submit"
+                      className={`btn w-100 ${
+                        loading || success || (invalidCode && "disabled")
+                      }`}
+                    >
+                      <span className={`${loading && "invisible"}`}>
+                        Bevestigen
+                      </span>
+                    </button>
+                    {loading && (
+                      <div className="position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center text-white">
+                        <div
+                          className="spinner-border spinner-border-sm position-absolute"
+                          role="status"
+                        />
+                      </div>
+                    )}
                   </div>
                 </form>
               </div>
@@ -404,4 +310,4 @@ function Signup() {
   );
 }
 
-export default Signup;
+export default ResetPassword;

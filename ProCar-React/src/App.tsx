@@ -7,6 +7,7 @@ import NotFound from "./pages/NotFound";
 import Login from "./pages/auth/Login";
 import Signup from "./pages/auth/Signup";
 import ForgotPassword from "./pages/auth/ForgotPassword";
+import ResetPassword from "./pages/auth/ResetPassword";
 import ConfirmEmail from "./pages/auth/ConfirmEmail";
 
 import Messages from "./pages/account/Messages";
@@ -21,6 +22,7 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/confirm_email" element={<ConfirmEmail />} />
         <Route path="/forgot_password" element={<ForgotPassword />} />
+        <Route path="/reset_password" element={<ResetPassword />} />
 
         <Route path="/sell" element={<Sell />} />
 
