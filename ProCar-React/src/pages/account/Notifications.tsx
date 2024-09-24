@@ -1,7 +1,7 @@
 import Helmet from "react-helmet";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
-import Notification from "../components/Notification";
+import Header from "../../components/Header";
+import Footer from "../../components/Footer";
+import Notification from "../../components/Notification";
 
 function Notifications() {
   return (

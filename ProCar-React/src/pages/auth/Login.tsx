@@ -2,16 +2,27 @@ import Helmet from "react-helmet";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import "../styles/Login.css";
-import { useState } from "react";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
-import Alert from "../components/Alert";
+import "../../styles/Login.css";
+import { useState, useEffect } from "react";
+import Header from "../../components/Header";
+import Footer from "../../components/Footer";
+import Alert from "../../components/Alert";
 
 function Login() {
   const navigate = useNavigate();
   const location = useLocation();
   const accountCreated = location.state?.account_created;
+  const redirectApiError = location.state?.api_error;
+  const emailConfirmError = location.state?.email_confirm_error;
+  const emailConfirmed = location.state?.email_confirmed;
+
+  useEffect(() => {
+    setApiError(redirectApiError);
+    const token = Cookies.get("accessToken");
+    if (token) {
+      navigate("/");
+    }
+  }, [navigate]);
 
   const [formData, setFormData] = useState({
     username: "",
@@ -58,9 +69,11 @@ function Login() {
       .post("https://localhost:7022/login", formData)
       .then(function (response) {
         if (response.status === 200) {
+          Cookies.remove("accessToken");
+          Cookies.remove("refreshToken");
           Cookies.set("accessToken", response.data.accessToken);
           rememberMe && Cookies.set("refreshToken", response.data.refreshToken);
-          navigate("/", {});
+          navigate("/");
         }
       })
       .catch(function (error) {
@@ -110,6 +123,22 @@ function Login() {
                 alertStatus={{
                   type: "success",
                   message: "Account met succes aangemaakt.",
+                }}
+              />
+            )}
+            {emailConfirmed && (
+              <Alert
+                alertStatus={{
+                  type: "success",
+                  message: "E-mail met succes geverifieerd.",
+                }}
+              />
+            )}
+            {emailConfirmError && (
+              <Alert
+                alertStatus={{
+                  type: "danger",
+                  message: "Het e-mailadres kon niet geverifieerd worden.",
                 }}
               />
             )}
@@ -178,7 +207,7 @@ function Login() {
                       } me-2 h5 mb-0 checkbox`}
                     ></i>
                     <span className="align-middle">Ingelogd blijven</span>
-                    <NavLink to="/reset-password" className="link ms-auto">
+                    <NavLink to="/forgot_password" className="link ms-auto">
                       Wachtwoord vergeten?
                     </NavLink>
                   </div>

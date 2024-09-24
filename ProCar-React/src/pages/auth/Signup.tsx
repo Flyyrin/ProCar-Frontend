@@ -1,16 +1,26 @@
 import Helmet from "react-helmet";
 import axios from "axios";
 import { NavLink, useNavigate } from "react-router-dom";
-import "../styles/Login.css";
-import { useState } from "react";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
-import Alert from "../components/Alert";
+import Cookies from "js-cookie";
+import "../../styles/Login.css";
+import { useState, useEffect } from "react";
+import Header from "../../components/Header";
+import Footer from "../../components/Footer";
+import Alert from "../../components/Alert";
 
 function Signup() {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = Cookies.get("accessToken");
+    if (token) {
+      navigate("/");
+    }
+  }, [navigate]);
+
   const [formData, setFormData] = useState({
-    username: "",
+    procarID: "",
+    UserName: "",
     email: "",
     password: "",
   });
@@ -126,8 +136,12 @@ function Signup() {
       !tempPasswordConfirmInvalid
     ) {
       setLoading(true);
+      const formDataToSubmit = {
+        ...formData,
+        UserName: formData.procarID,
+      };
       axios
-        .post("https://localhost:7022/register", formData)
+        .post("https://localhost:7022/register", formDataToSubmit)
         .then(function (response) {
           if (response.status === 200) {
             navigate("/login", {

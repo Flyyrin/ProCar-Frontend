@@ -7,6 +7,7 @@ import "../styles/Header.css";
 function Header() {
   const navigate = useNavigate();
   const token = Cookies.get("accessToken");
+  const signedIn = !!token;
 
   const handleLogout = () => {
     Cookies.remove("accessToken");
@@ -59,7 +60,7 @@ function Header() {
                 >
                   <div className="d-flex align-items-center">
                     <i className="bi bi-bell h5 mb-0 me-1 position-relative">
-                      {true && (
+                      {!signedIn && (
                         <img
                           src={indicator}
                           alt="indicator"
@@ -74,7 +75,7 @@ function Header() {
                 </NavLink>
               </li>
 
-              {!!token ? (
+              {signedIn ? (
                 <li className="nav-item dropdown">
                   <NavLink
                     className="nav-link my-0 text-dark underline"

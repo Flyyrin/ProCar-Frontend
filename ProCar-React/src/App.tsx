@@ -1,13 +1,16 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
-import NotFound from "./pages/NotFound";
-import Messages from "./pages/Messages";
-import Notifications from "./pages/Notifications";
-import Account from "./pages/Account";
 import Sell from "./pages/Sell";
+import NotFound from "./pages/NotFound";
+
+import Login from "./pages/auth/Login";
+import Signup from "./pages/auth/Signup";
+import ForgotPassword from "./pages/auth/ForgotPassword";
+import ConfirmEmail from "./pages/auth/ConfirmEmail";
+
+import Messages from "./pages/account/Messages";
+import Notifications from "./pages/account/Notifications";
 
 function App() {
   return (
@@ -16,10 +19,13 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/confirm_email" element={<ConfirmEmail />} />
+        <Route path="/forgot_password" element={<ForgotPassword />} />
+
+        <Route path="/sell" element={<Sell />} />
+
         <Route path="/messages" element={<Messages />} />
         <Route path="/notifications" element={<Notifications />} />
-        <Route path="/account" element={<Account />} />
-        <Route path="/sell" element={<Sell />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
