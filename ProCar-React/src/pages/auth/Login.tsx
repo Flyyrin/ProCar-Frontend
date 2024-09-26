@@ -75,22 +75,41 @@ function Login() {
   const [invalidLogin, setInvalidLogin] = useState(false);
   const [apiError, setApiError] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [confirmEmailError, setConfirmEmailError] = useState(false);
   const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     navigate("/login", { replace: true });
     setLoading(true);
     event.preventDefault();
     setApiError(false);
     setInvalidLogin(false);
+    setConfirmEmailError(false);
     axios
       .post("https://localhost:7022/login", formData)
       .then(function (response) {
         if (response.status === 200) {
           localStorage.removeItem("accessToken");
           localStorage.removeItem("refreshToken");
-          localStorage.setItem("accessToken", response.data.accessToken);
-          rememberMe &&
-            localStorage.setItem("refreshToken", response.data.refreshToken);
-          window.location.href = redirect ? `/${redirect}` : "/";
+          axios
+            .post("https://localhost:7022/IsEmailVerified", {
+              email: formData.email,
+            })
+            .then(function () {
+              localStorage.setItem("accessToken", response.data.accessToken);
+              rememberMe &&
+                localStorage.setItem(
+                  "refreshToken",
+                  response.data.refreshToken
+                );
+              window.location.href = redirect ? `/${redirect}` : "/";
+            })
+            .catch(function (error) {
+              if (error.response.status === 400) {
+                setConfirmEmailError(true);
+                setLoading(false);
+              } else {
+                setApiError(true);
+              }
+            });
         }
       })
       .catch(function (error) {
@@ -157,6 +176,15 @@ function Login() {
                 alertStatus={{
                   type: "danger",
                   message: "Het e-mailadres kon niet geverifieerd worden.",
+                }}
+              />
+            )}
+
+            {confirmEmailError && (
+              <Alert
+                alertStatus={{
+                  type: "danger",
+                  message: "Het e-mailadres is nog niet geverifieerd.",
                 }}
               />
             )}
