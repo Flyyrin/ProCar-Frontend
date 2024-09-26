@@ -15,6 +15,7 @@ function Login() {
   const redirectApiError = location.state?.api_error;
   const emailConfirmError = location.state?.email_confirm_error;
   const emailConfirmed = location.state?.email_confirmed;
+  var redirect = new URLSearchParams(window.location.search).get("to");
 
   useEffect(() => {
     setApiError(redirectApiError);
@@ -73,7 +74,7 @@ function Login() {
           Cookies.remove("refreshToken");
           Cookies.set("accessToken", response.data.accessToken);
           rememberMe && Cookies.set("refreshToken", response.data.refreshToken);
-          navigate("/");
+          navigate(redirect ? `/${redirect}` : "/");
         }
       })
       .catch(function (error) {
@@ -155,7 +156,10 @@ function Login() {
                     </NavLink>
                   </li>
                   <li className="nav-item">
-                    <NavLink className="nav-link text-secondary" to="/signup">
+                    <NavLink
+                      className="nav-link text-secondary"
+                      to={`/signup${location.search}`}
+                    >
                       Account aanmaken
                     </NavLink>
                   </li>

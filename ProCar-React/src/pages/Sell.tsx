@@ -7,6 +7,7 @@ function Sell() {
     <>
       <Helmet>
         <title>Verkopen - ProCar</title>
+        <meta name="authorize"></meta>
       </Helmet>
       <Header />
       <p>Verkopen</p>

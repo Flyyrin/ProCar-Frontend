@@ -1,19 +1,62 @@
 import { NavLink, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import Cookies from "js-cookie";
+import axios from "axios";
 import procarLogo from "/procar.png";
 import indicator from "../assets/indicator.svg";
 import "../styles/Header.css";
+import Alert from "./Alert";
 
 function Header() {
-  const navigate = useNavigate();
   const token = Cookies.get("accessToken");
   const signedIn = !!token;
 
-  const handleLogout = () => {
+  const handleLogoutFix = () => {
+    handleLogout();
+  };
+
+  const handleLogout = (redirect = "/") => {
     Cookies.remove("accessToken");
     Cookies.remove("refreshToken");
-    window.location.href = "/";
+    window.location.href = redirect;
   };
+
+  const [headerSuccess, setHeaderSuccess] = useState(false);
+  const [apiError, setApiError] = useState(false);
+  const [username, SetUsername] = useState("");
+  const [unreadMessages, setUnreadMessages] = useState(false);
+  const [unreadNotifications, setUnreadNotifications] = useState(false);
+  if (!headerSuccess) {
+    axios
+      .get("https://localhost:7022/GetHeaderStatus", {
+        headers: {
+          Authorization: `Bearer ${Cookies.get("accessToken")}`,
+        },
+      })
+      .then(async function (response) {
+        if (response.status === 200) {
+          setApiError(false);
+          SetUsername(response.data.name);
+          setUnreadMessages(response.data.messages);
+          setUnreadNotifications(response.data.notifications);
+          setHeaderSuccess(true);
+        }
+      })
+      .catch(function (error) {
+        if (error.response && error.response.status) {
+          if (error.response.status === 401) {
+            if (document.querySelector('meta[name="authorize"]')) {
+              handleLogout(`/login?to=${window.location.pathname.slice(1)}`);
+            }
+          } else {
+            setApiError(true);
+          }
+        } else {
+          setApiError(true);
+        }
+        window.scrollTo(0, 0);
+      });
+  }
 
   return (
     <header>
@@ -38,7 +81,7 @@ function Header() {
                 >
                   <div className="d-flex align-items-center">
                     <i className="bi bi-chat h5 mb-0 me-1 position-relative">
-                      {true && (
+                      {unreadMessages && (
                         <img
                           src={indicator}
                           alt="indicator"
@@ -60,7 +103,7 @@ function Header() {
                 >
                   <div className="d-flex align-items-center">
                     <i className="bi bi-bell h5 mb-0 me-1 position-relative">
-                      {!signedIn && (
+                      {(!signedIn || unreadNotifications) && (
                         <img
                           src={indicator}
                           alt="indicator"
@@ -88,7 +131,7 @@ function Header() {
                     <div className="d-flex align-items-center">
                       <i className="bi bi-person h5 mb-0 me-1"></i>
                       <span className="align-middle d-none d-md-flex me-1">
-                        Naam Test
+                        {username}
                       </span>
                       <i className="bi bi-chevron-down mb-0"></i>
                     </div>
@@ -118,7 +161,7 @@ function Header() {
                     >
                       Mijn profiel
                     </NavLink>
-                    <a className="dropdown-item mb-1" onClick={handleLogout}>
+                    <a className="dropdown-item mb-1" onClick={handleLogoutFix}>
                       Uitloggen
                     </a>
                   </div>
@@ -153,6 +196,16 @@ function Header() {
           </div>
         </div>
       </nav>
+      {apiError && (
+        <nav className="mx-5 mt-1">
+          <Alert
+            alertStatus={{
+              type: "danger",
+              message: "Er is iets mis gegaan, probeer het later nog eens.",
+            }}
+          />
+        </nav>
+      )}
     </header>
   );
 }

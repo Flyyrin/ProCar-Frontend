@@ -8,6 +8,7 @@ function Notifications() {
     <>
       <Helmet>
         <title>Meldingen - ProCar</title>
+        <meta name="authorize"></meta>
       </Helmet>
       <Header />
       <div className="container mt-4">

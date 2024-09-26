@@ -7,6 +7,7 @@ function Messages() {
     <>
       <Helmet>
         <title>Berichten - ProCar</title>
+        <meta name="authorize"></meta>
       </Helmet>
       <Header />
       <p>Berichten</p>

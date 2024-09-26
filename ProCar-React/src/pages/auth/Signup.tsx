@@ -143,7 +143,7 @@ function Signup() {
         .then(async function (response) {
           if (response.status === 200) {
             await updateUserName();
-            navigate("/login", {
+            navigate(`/login${location.search}`, {
               state: { account_created: true },
             });
           }
@@ -205,7 +205,7 @@ function Signup() {
                     <NavLink
                       className="nav-link text-secondary"
                       aria-current="page"
-                      to="/login"
+                      to={`/login${location.search}`}
                     >
                       Inloggen
                     </NavLink>

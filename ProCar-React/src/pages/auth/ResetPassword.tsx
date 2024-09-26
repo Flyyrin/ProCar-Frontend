@@ -1,7 +1,7 @@
 import Helmet from "react-helmet";
 import axios from "axios";
 import "../../styles/Login.css";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import Alert from "../../components/Alert";
