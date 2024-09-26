@@ -132,7 +132,7 @@ function ForgotPassword() {
                     <button
                       type="submit"
                       className={`btn w-100 ${
-                        loading || (success && "disabled")
+                        (loading || success) && "disabled"
                       }`}
                     >
                       <span className={`${loading && "invisible"}`}>

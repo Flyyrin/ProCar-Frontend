@@ -283,7 +283,7 @@ function ResetPassword() {
                     <button
                       type="submit"
                       className={`btn w-100 ${
-                        loading || success || (invalidCode && "disabled")
+                        (loading || success || invalidCode) && "disabled"
                       }`}
                     >
                       <span className={`${loading && "invisible"}`}>
