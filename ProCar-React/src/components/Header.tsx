@@ -21,6 +21,8 @@ function Header() {
     window.location.href = redirect;
   };
 
+  const handleRefresh = (redirect = "/") => {};
+
   const [headerSuccess, setHeaderSuccess] = useState(false);
   const [apiError, setApiError] = useState(false);
   const [username, SetUsername] = useState("");
@@ -46,7 +48,12 @@ function Header() {
         if (error.response && error.response.status) {
           if (error.response.status === 401) {
             if (document.querySelector('meta[name="authorize"]')) {
-              handleLogout(`/login?to=${window.location.pathname.slice(1)}`);
+              var refreshToken = Cookies.get("refreshToken");
+              if (refreshToken) {
+                handleRefresh();
+              } else {
+                handleLogout(`/login?to=${window.location.pathname.slice(1)}`);
+              }
             }
           } else {
             setApiError(true);
