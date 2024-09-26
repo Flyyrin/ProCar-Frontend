@@ -28,11 +28,7 @@ function Header() {
   const [unreadNotifications, setUnreadNotifications] = useState(false);
   if (!headerSuccess) {
     axios
-      .get("https://localhost:7022/GetHeaderStatus", {
-        headers: {
-          Authorization: `Bearer ${Cookies.get("accessToken")}`,
-        },
-      })
+      .get("https://localhost:7022/GetHeaderStatus")
       .then(async function (response) {
         if (response.status === 200) {
           setApiError(false);
