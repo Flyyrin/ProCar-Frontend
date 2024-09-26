@@ -1,22 +1,14 @@
 import Helmet from "react-helmet";
 import axios from "axios";
 import { NavLink, useNavigate } from "react-router-dom";
-import Cookies from "js-cookie";
 import "../../styles/Login.css";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import Alert from "../../components/Alert";
 
 function Signup() {
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const token = Cookies.get("accessToken");
-    if (token) {
-      navigate("/");
-    }
-  }, [navigate]);
 
   const [formData, setFormData] = useState({
     username: "",
@@ -176,6 +168,7 @@ function Signup() {
     <>
       <Helmet>
         <title>Account Aanmaken - ProCar</title>
+        <meta name="pre-authorize"></meta>
       </Helmet>
       <Header />
       <div className="container mt-4">
@@ -232,6 +225,7 @@ function Signup() {
                       id="procarID"
                       aria-describedby="nameHelp"
                       onChange={handleNameChange}
+                      disabled={loading}
                     />
                     <div
                       id="nameHelp"
@@ -263,6 +257,7 @@ function Signup() {
                       }`}
                       id="email"
                       onChange={handleEmailChange}
+                      disabled={loading}
                     />
                     <div
                       className={`invalid-feedback ${
@@ -295,6 +290,7 @@ function Signup() {
                         id="new-password"
                         aria-describedby="passwordHelp"
                         onChange={handlePasswordChange}
+                        disabled={loading}
                       />
                       <span
                         className="input-group-text bg-white password-toggler border-0"
@@ -364,6 +360,7 @@ function Signup() {
                         className="form-control border-0"
                         id="password-confirm"
                         onChange={handlePasswordConfirmChange}
+                        disabled={loading}
                       />
                       <span
                         className="input-group-text bg-white password-toggler border-0"

@@ -1,6 +1,5 @@
 import { NavLink, useNavigate } from "react-router-dom";
-import { useState } from "react";
-import Cookies from "js-cookie";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import procarLogo from "/procar.png";
 import indicator from "../assets/indicator.svg";
@@ -8,31 +7,29 @@ import "../styles/Header.css";
 import Alert from "./Alert";
 
 function Header() {
-  const token = Cookies.get("accessToken");
-  const signedIn = !!token;
+  const navigate = useNavigate();
+  const token = localStorage.getItem("accessToken");
 
   const handleLogoutFix = () => {
     handleLogout();
   };
 
   const handleLogout = (redirect = "/") => {
-    Cookies.remove("accessToken");
-    Cookies.remove("refreshToken");
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
     window.location.href = redirect;
   };
 
-  const handleRefresh = (redirect = "/") => {};
-
-  const [headerSuccess, setHeaderSuccess] = useState(false);
+  const [signedIn, setSignedIn] = useState(false);
   const [apiError, setApiError] = useState(false);
   const [username, SetUsername] = useState("");
   const [unreadMessages, setUnreadMessages] = useState(false);
   const [unreadNotifications, setUnreadNotifications] = useState(false);
-  if (!headerSuccess) {
+  useEffect(() => {
     axios
       .get("https://localhost:7022/GetHeaderStatus", {
         headers: {
-          Authorization: `Bearer ${Cookies.get("accessToken")}`,
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
       })
       .then(async function (response) {
@@ -41,19 +38,23 @@ function Header() {
           SetUsername(response.data.name);
           setUnreadMessages(response.data.messages);
           setUnreadNotifications(response.data.notifications);
-          setHeaderSuccess(true);
+          setSignedIn(true);
+          if (document.querySelector('meta[name="pre-authorize"]')) {
+            navigate("/");
+          }
         }
       })
       .catch(function (error) {
         if (error.response && error.response.status) {
           if (error.response.status === 401) {
             if (document.querySelector('meta[name="authorize"]')) {
-              var refreshToken = Cookies.get("refreshToken");
+              var refreshToken = localStorage.getItem("refreshToken");
               if (refreshToken) {
-                handleRefresh();
+                navigate(`/login?to=${window.location.pathname.slice(1)}`);
               } else {
                 handleLogout(`/login?to=${window.location.pathname.slice(1)}`);
               }
+              setSignedIn(false);
             }
           } else {
             setApiError(true);
@@ -63,7 +64,7 @@ function Header() {
         }
         window.scrollTo(0, 0);
       });
-  }
+  }, []);
 
   return (
     <header>

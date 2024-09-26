@@ -1,6 +1,5 @@
 import Helmet from "react-helmet";
 import axios from "axios";
-import Cookies from "js-cookie";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import "../../styles/Login.css";
 import { useState, useEffect } from "react";
@@ -19,11 +18,27 @@ function Login() {
 
   useEffect(() => {
     setApiError(redirectApiError);
-    const token = Cookies.get("accessToken");
-    if (token) {
-      navigate("/");
+    const refreshToken = localStorage.getItem("refreshToken");
+
+    if (refreshToken) {
+      setLoading(true);
+      axios
+        .post("https://localhost:7022/refresh", {
+          refreshToken: refreshToken,
+        })
+        .then(function (response) {
+          if (response.status === 200) {
+            localStorage.setItem("accessToken", response.data.accessToken);
+            localStorage.setItem("refreshToken", response.data.refreshToken);
+            window.location.href = redirect ? `/${redirect}` : "/";
+          }
+        })
+        .catch(function () {
+          localStorage.removeItem("refreshToken");
+          setLoading(false);
+        });
     }
-  }, [navigate]);
+  }, []);
 
   const [formData, setFormData] = useState({
     username: "",
@@ -70,11 +85,12 @@ function Login() {
       .post("https://localhost:7022/login", formData)
       .then(function (response) {
         if (response.status === 200) {
-          Cookies.remove("accessToken");
-          Cookies.remove("refreshToken");
-          Cookies.set("accessToken", response.data.accessToken);
-          rememberMe && Cookies.set("refreshToken", response.data.refreshToken);
-          navigate(redirect ? `/${redirect}` : "/");
+          localStorage.removeItem("accessToken");
+          localStorage.removeItem("refreshToken");
+          localStorage.setItem("accessToken", response.data.accessToken);
+          rememberMe &&
+            localStorage.setItem("refreshToken", response.data.refreshToken);
+          window.location.href = redirect ? `/${redirect}` : "/";
         }
       })
       .catch(function (error) {
@@ -96,6 +112,7 @@ function Login() {
     <>
       <Helmet>
         <title>Inloggen - ProCar</title>
+        <meta name="pre-authorize"></meta>
       </Helmet>
       <Header />
 
@@ -177,6 +194,7 @@ function Login() {
                       className="form-control"
                       id="emailInput"
                       onChange={handleFormChange}
+                      disabled={loading}
                     />
                   </div>
                   <div className="mb-3">
@@ -190,6 +208,7 @@ function Login() {
                         className="form-control border-0"
                         id="passwordInput"
                         onChange={handleFormChange}
+                        disabled={loading}
                       />
                       <span
                         className="input-group-text bg-white password-toggler border-0"
