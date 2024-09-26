@@ -19,8 +19,7 @@ function Signup() {
   }, [navigate]);
 
   const [formData, setFormData] = useState({
-    procarID: "",
-    UserName: "",
+    username: "",
     email: "",
     password: "",
   });
@@ -69,7 +68,10 @@ function Signup() {
     const value = event.target.value;
     setNameValue(value);
     setNameInvalid(!nameValidationRegex.test(value));
-    handleFormChange(event);
+    setFormData({
+      ...formData,
+      username: value,
+    });
   };
 
   const [emailValue, setEmailValue] = useState("");
@@ -138,8 +140,9 @@ function Signup() {
       setLoading(true);
       axios
         .post("https://localhost:7022/register", formData)
-        .then(function (response) {
+        .then(async function (response) {
           if (response.status === 200) {
+            await updateUserName();
             navigate("/login", {
               state: { account_created: true },
             });
@@ -159,6 +162,14 @@ function Signup() {
           window.scrollTo(0, 0);
         });
     }
+  };
+
+  const updateUserName = () => {
+    axios
+      .post("https://localhost:7022/RegisterUserName", formData)
+      .then(async function () {
+        return;
+      });
   };
 
   return (
