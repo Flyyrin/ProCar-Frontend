@@ -1,5 +1,5 @@
 import Helmet from "react-helmet";
-import axios from "axios";
+import axiosInstance from "../../components/AxiosInstance";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import "../../styles/Login.css";
 import { useState, useEffect } from "react";
@@ -22,8 +22,8 @@ function Login() {
 
     if (refreshToken) {
       setLoading(true);
-      axios
-        .post("https://localhost:7022/refresh", {
+      axiosInstance
+        .post("/refresh", {
           refreshToken: refreshToken,
         })
         .then(function (response) {
@@ -83,14 +83,14 @@ function Login() {
     setApiError(false);
     setInvalidLogin(false);
     setConfirmEmailError(false);
-    axios
-      .post("https://localhost:7022/login", formData)
+    axiosInstance
+      .post("/login", formData)
       .then(function (response) {
         if (response.status === 200) {
           localStorage.removeItem("accessToken");
           localStorage.removeItem("refreshToken");
-          axios
-            .post("https://localhost:7022/IsEmailVerified", {
+          axiosInstance
+            .post("/IsEmailVerified", {
               email: formData.email,
             })
             .then(function () {

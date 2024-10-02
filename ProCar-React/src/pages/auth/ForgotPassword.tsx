@@ -1,5 +1,5 @@
 import Helmet from "react-helmet";
-import axios from "axios";
+import axiosInstance from "../../components/AxiosInstance";
 import "../../styles/Login.css";
 import { useState } from "react";
 import Header from "../../components/Header";
@@ -42,8 +42,8 @@ function ForgotPassword() {
     setApiError(false);
     if (!tempEmailInvalid) {
       setLoading(true);
-      axios
-        .post("https://localhost:7022/forgotPassword", formData)
+      axiosInstance
+        .post("/forgotPassword", formData)
         .then(function (response) {
           if (response.status === 200) {
             setSuccess(true);

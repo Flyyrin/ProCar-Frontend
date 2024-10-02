@@ -1,5 +1,5 @@
 import Helmet from "react-helmet";
-import axios from "axios";
+import axiosInstance from "../../components/AxiosInstance";
 import { NavLink, useNavigate } from "react-router-dom";
 import "../../styles/Login.css";
 import { useState } from "react";
@@ -130,8 +130,8 @@ function Signup() {
       !tempPasswordConfirmInvalid
     ) {
       setLoading(true);
-      axios
-        .post("https://localhost:7022/register", formData)
+      axiosInstance
+        .post("/register", formData)
         .then(async function (response) {
           if (response.status === 200) {
             await updateUserName();
@@ -157,11 +157,9 @@ function Signup() {
   };
 
   const updateUserName = () => {
-    axios
-      .post("https://localhost:7022/RegisterUserName", formData)
-      .then(async function () {
-        return;
-      });
+    axiosInstance.post("/RegisterUserName", formData).then(async function () {
+      return;
+    });
   };
 
   return (

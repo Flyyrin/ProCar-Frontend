@@ -1,5 +1,5 @@
 import Helmet from "react-helmet";
-import axios from "axios";
+import axiosInstance from "../../components/AxiosInstance";
 import "../../styles/Login.css";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
@@ -14,8 +14,8 @@ function ConfirmEmail() {
     const query = `?userId=${queryParameters.get(
       "userId"
     )}&code=${queryParameters.get("code")}`;
-    axios
-      .get(`https://localhost:7022/confirmEmail${query}`)
+    axiosInstance
+      .get(`/confirmEmail${query}`)
       .then(function (response) {
         if (response.status === 200) {
           navigate("/login", {

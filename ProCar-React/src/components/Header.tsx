@@ -1,6 +1,6 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import axios from "axios";
+import axiosInstance from "./AxiosInstance";
 import procarLogo from "/procar.png";
 import indicator from "../assets/indicator.svg";
 import "../styles/Header.css";
@@ -25,8 +25,8 @@ function Header() {
   const [unreadMessages, setUnreadMessages] = useState(false);
   const [unreadNotifications, setUnreadNotifications] = useState(false);
   useEffect(() => {
-    axios
-      .get("https://localhost:7022/GetHeaderStatus", {
+    axiosInstance
+      .get("/GetHeaderStatus", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
