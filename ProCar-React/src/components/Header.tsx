@@ -8,7 +8,6 @@ import Alert from "./Alert";
 
 function Header() {
   const navigate = useNavigate();
-  const token = localStorage.getItem("accessToken");
 
   const handleLogoutFix = () => {
     handleLogout();
