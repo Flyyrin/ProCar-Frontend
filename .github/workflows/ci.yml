@@ -17,6 +17,6 @@ jobs:
         run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
 
       - name: Build the Docker image
-        run: docker build -t rafael951/procar-frontend -f ProCar-React/Dockerfile  .
+        run: docker build -t rafael951/procar-frontend -f ProCar-React/Dockerfile ProCar-React
       - name: Push to Dockerhub
         run: docker push rafael951/procar-frontend:latest
