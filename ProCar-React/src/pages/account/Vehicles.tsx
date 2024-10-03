@@ -3,14 +3,7 @@ import { useState, useEffect } from "react";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import VehicleItem from "../../components/VehicleItem";
-
-interface Vehicle {
-  id: string;
-  type: string;
-  brand: string;
-  commercialName: string;
-  licensePlate: string;
-}
+import { Vehicle } from "../../interfaces/Vehicle";
 
 function Vehicles() {
   const [vehicleData, setVehicleData] = useState<Vehicle[]>([]);
@@ -49,7 +42,7 @@ function Vehicles() {
             {vehicleData.length > 0 ? (
               <div className="accordion">
                 {vehicleData.map((vehicle) => (
-                  <VehicleItem vehicleItemData={vehicle} />
+                  <VehicleItem vehicleData={vehicle} />
                 ))}
               </div>
             ) : (

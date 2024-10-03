@@ -1,13 +1,6 @@
 import carIcon from "../assets/vehicleTypes/car.svg";
 import motorcycleIcon from "../assets/vehicleTypes/motorcycle.svg";
-
-interface VehicleItemData {
-  id: string;
-  type: string;
-  brand: string;
-  commercialName: string;
-  licensePlate: string;
-}
+import { Vehicle } from "../interfaces/Vehicle";
 
 function getIconPath(type: string): string {
   if (type == "Bromfiets") {
@@ -16,31 +9,21 @@ function getIconPath(type: string): string {
   return carIcon;
 }
 
-function VehicleItem({
-  vehicleItemData = {
-    id: "",
-    type: "",
-    brand: "",
-    commercialName: "",
-    licensePlate: "",
-  },
-}: {
-  vehicleItemData?: VehicleItemData;
-}) {
+function VehicleItem({ vehicleData }: { vehicleData: Vehicle }) {
   return (
     <div className="accordion-item">
-      <div className="accordion-header" id={`heading-${vehicleItemData.id}`}>
+      <div className="accordion-header" id={`heading-${vehicleData.id}`}>
         <button
           className="accordion-button collapsed"
           type="button"
           data-bs-toggle="collapse"
-          data-bs-target={`#collapse-${vehicleItemData.id}`}
+          data-bs-target={`#collapse-${vehicleData.id}`}
           aria-expanded="true"
           aria-controls="collapse"
         >
           <div className="notification-image-container me-3 flex-shrink-0">
             <img
-              src={getIconPath(vehicleItemData.type)}
+              src={getIconPath(vehicleData.type)}
               className="w-100"
               alt="Image"
             ></img>
@@ -48,19 +31,19 @@ function VehicleItem({
           <div>
             <p className="mb-0">
               <strong className="highlight">
-                {vehicleItemData.brand} {vehicleItemData.commercialName}
+                {vehicleData.brand} {vehicleData.commercialName}
               </strong>
             </p>
             <p className="text-muted mb-0 fs-6">
-              <small>{vehicleItemData.licensePlate}</small>
+              <small>{vehicleData.licensePlate}</small>
             </p>
           </div>
         </button>
       </div>
       <div
-        id={`collapse-${vehicleItemData.id}`}
+        id={`collapse-${vehicleData.id}`}
         className="accordion-collapse collapse"
-        aria-labelledby={`heading-${vehicleItemData.id}`}
+        aria-labelledby={`heading-${vehicleData.id}`}
       >
         <div className="accordion-body">...</div>
       </div>
