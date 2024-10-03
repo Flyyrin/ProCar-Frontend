@@ -2,25 +2,60 @@ import Helmet from "react-helmet";
 import axiosInstance from "../../components/AxiosInstance";
 import "../../styles/Login.css";
 import { useState } from "react";
+import "../../styles/Plate.css";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import Alert from "../../components/Alert";
 
-function ForgotPassword() {
+function AddVehicle() {
   const [formData, setFormData] = useState({
-    email: "",
+    place: "",
   });
 
-  const [emailValue, setEmailValue] = useState("");
-  const [emailInvalid, setEmailInvalid] = useState(false);
-  const emailValidationRegex =
-    /^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
+  const [plateValue, setPlateValue] = useState("");
+  const [plateInvalid, setPlateInvalid] = useState(false);
+  const plateValidationRegex = /^[a-zA-Z0-9]{6}$/;
 
-  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    setEmailValue(value);
-    setEmailInvalid(!emailValidationRegex.test(value));
+  const handlePlateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setVehicleModel("");
+    setPlateSuccess(false);
+    var value = event.target.value;
+    value = value.replace(/-/g, "");
+    setPlateValue(value);
+    setPlateInvalid(!plateValidationRegex.test(value));
     handleFormChange(event);
+
+    if (value.length == 6) {
+      handlePlateCheck(value);
+    }
+  };
+
+  const [vehicleModel, setVehicleModel] = useState("");
+  const [plateSuccess, setPlateSuccess] = useState(false);
+  const handlePlateCheck = (plate: string) => {
+    setLoading(true);
+    axiosInstance
+      .get(`/checkLicensePlate?licensePlate=${plate}`)
+      .then(function (response) {
+        if (response.status === 200) {
+          setVehicleModel(response.data.model);
+          setApiError(false);
+          setLoading(false);
+        }
+      })
+      .catch(function (error) {
+        if (error.response && error.response.status) {
+          if (error.response.status === 400) {
+            setPlateInvalid(true);
+          } else {
+            setApiError(true);
+          }
+        } else {
+          setApiError(true);
+        }
+        setLoading(false);
+        window.scrollTo(0, 0);
+      });
   };
 
   const handleFormChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -33,20 +68,18 @@ function ForgotPassword() {
 
   const [apiError, setApiError] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
   const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    const tempEmailInvalid = !emailValidationRegex.test(emailValue);
-    setEmailInvalid(tempEmailInvalid);
+    const tempPlaceInvalid = !plateValidationRegex.test(plateValue);
+    setPlateInvalid(tempPlaceInvalid);
 
     event.preventDefault();
     setApiError(false);
-    if (!tempEmailInvalid) {
+    if (!tempPlaceInvalid && plateSuccess) {
       setLoading(true);
       axiosInstance
-        .post("/forgotPassword", formData)
+        .post("/addVehicle", formData)
         .then(function (response) {
           if (response.status === 200) {
-            setSuccess(true);
             setApiError(false);
             setLoading(false);
           }
@@ -62,13 +95,14 @@ function ForgotPassword() {
   return (
     <>
       <Helmet>
-        <title>Wachtwoord Vergeten? - ProCar</title>
+        <title>Voertuig toevoegen - ProCar</title>
+        <meta name="authorize"></meta>
       </Helmet>
       <Header />
 
       <div className="container mt-4">
         <h3 className="fw-bold my-4 text-md-center ps-2 ps-md-0">
-          Wachtwoord vergeten?
+          Voertuig toevoegen
         </h3>
         <div className="row d-flex justify-content-center">
           <div className="col-lg-6 col-md-10">
@@ -80,60 +114,47 @@ function ForgotPassword() {
                 }}
               />
             )}
-            {success && (
-              <Alert
-                alertStatus={{
-                  type: "success",
-                  message: "E-mail met succes verstuurd.",
-                }}
-              />
-            )}
             <div className="card">
               <div className="card-body">
                 <form onSubmit={handleFormSubmit} noValidate>
                   <div className="mb-3">
                     <h4 className="fw-bold">
-                      Voer je e-mailadres in om je wachtwoord opnieuw in te
-                      stellen
+                      Voer je kenteken in om je voertuig toe te voegen
                     </h4>
                   </div>
                   <div className="mb-3">
-                    <label htmlFor="email" className="form-label">
-                      E-mailadres
-                    </label>
                     <input
                       type="text"
-                      name="email"
+                      name="plate"
                       autoComplete="off"
-                      className={`form-control ${
-                        emailInvalid && "is-invalid"
-                      } `}
-                      id="email"
-                      onChange={handleEmailChange}
-                      disabled={success}
+                      placeholder="xx-xx-xx"
+                      className="form-control plate text-uppercase text-center border-2"
+                      maxLength={8}
+                      size={10}
+                      onChange={handlePlateChange}
                     />
                     <div
                       className={`invalid-feedback ${
-                        emailInvalid && "d-block"
+                        plateInvalid && "d-block"
                       }`}
                     >
                       <i className="bi bi-exclamation-triangle"></i> Geen geldig
-                      e-mailadres ingevuld.
+                      kenteken ingevuld.
                     </div>
+                    <p className="mb-0">
+                      <strong className="highlight">{vehicleModel}</strong>
+                    </p>
                   </div>
                   <div className="mb-4">
                     <small>
-                      Wij sturen een link naar het door jou ingevulde
-                      e-mailadres. Gebruik deze link om vervolgens een nieuw
-                      wachtwoord in te stellen.
+                      Wij vragen je voertuig gegevens op bij de RDW op basis van
+                      het kenteken.
                     </small>
                   </div>
                   <div className="position-relative">
                     <button
                       type="submit"
-                      className={`btn w-100 ${
-                        (loading || success) && "disabled"
-                      }`}
+                      className={`btn w-100 ${loading && "disabled"}`}
                     >
                       <span className={`${loading && "invisible"}`}>
                         Versturen
@@ -159,4 +180,4 @@ function ForgotPassword() {
   );
 }
 
-export default ForgotPassword;
+export default AddVehicle;

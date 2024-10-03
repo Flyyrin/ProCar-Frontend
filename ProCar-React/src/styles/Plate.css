@@ -1,0 +1,31 @@
+@font-face {
+  font-family: plateDutch;
+  src: url("../assets/fonts/plateDutch.ttf");
+}
+
+.plate {
+  background-color: #ffd101;
+  border-color: black;
+  border-radius: 6px;
+  background-image: url("../assets/plate.svg");
+  font-family: plateDutch;
+  width: 225px;
+  padding: 3px 3px 0px 20px;
+  background-repeat: no-repeat;
+  background-position: 0 center;
+  font-size: 28px;
+}
+
+.plate::placeholder {
+  color: #373737;
+}
+
+.plate:focus,
+.plate:active {
+  background-color: #ffd101;
+  border-color: black !important;
+}
+
+.plate:focus::placeholder {
+  color: transparent;
+}
