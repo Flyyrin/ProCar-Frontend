@@ -149,7 +149,7 @@ function Header() {
                   >
                     <NavLink
                       className="dropdown-item mb-1"
-                      to="/account/vehicles"
+                      to="/account/my_vehicles"
                     >
                       Mijn voertuigen
                     </NavLink>
@@ -192,7 +192,7 @@ function Header() {
               <li className="nav-item my-auto">
                 <NavLink className="nav-link my-0 py-0" to="/sell">
                   <div className="d-flex align-items-center btn btn-sm text-white mb-xs-2">
-                    <i className="bi bi-car-front h5 mb-0"></i>
+                    <i className="bi bi-car-front-fill h5 mb-0"></i>
                     <span className="align-middle ms-2 d-none d-lg-flex">
                       Verkoop een auto
                     </span>
