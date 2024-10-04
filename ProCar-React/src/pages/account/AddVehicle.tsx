@@ -169,7 +169,7 @@ function AddVehicle() {
                       className={`btn w-100 ${loading && "disabled"}`}
                     >
                       <span className={`${loading && "invisible"}`}>
-                        Versturen
+                        Toevoegen
                       </span>
                     </button>
                     {loading && (
