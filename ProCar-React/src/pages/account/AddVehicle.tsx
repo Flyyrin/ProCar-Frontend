@@ -17,7 +17,7 @@ function AddVehicle() {
   const plateValidationRegex = /^[a-zA-Z0-9]{6}$/;
 
   const handlePlateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setVehicleModel("");
+    setVehicleData([]);
     setPlateSuccess(false);
     var value = event.target.value;
     value = value.replace(/-/g, "");
@@ -30,7 +30,7 @@ function AddVehicle() {
     }
   };
 
-  const [vehicleModel, setVehicleModel] = useState("");
+  const [vehicleData, setVehicleData] = useState<any[]>([]);
   const [plateSuccess, setPlateSuccess] = useState(false);
   const handlePlateCheck = (plate: string) => {
     setLoading(true);
@@ -38,7 +38,8 @@ function AddVehicle() {
       .get(`/checkLicensePlate?licensePlate=${plate}`)
       .then(function (response) {
         if (response.status === 200) {
-          setVehicleModel(response.data.model);
+          setPlateSuccess(true);
+          setVehicleData(response.data);
           setApiError(false);
           setLoading(false);
         }
@@ -128,7 +129,7 @@ function AddVehicle() {
                       name="plate"
                       autoComplete="off"
                       placeholder="xx-xx-xx"
-                      className="form-control plate text-uppercase text-center border-2"
+                      className="form-control plate text-uppercase text-center border-2 mb-2"
                       maxLength={8}
                       size={10}
                       onChange={handlePlateChange}
@@ -141,9 +142,20 @@ function AddVehicle() {
                       <i className="bi bi-exclamation-triangle"></i> Geen geldig
                       kenteken ingevuld.
                     </div>
-                    <p className="mb-0">
-                      <strong className="highlight">{vehicleModel}</strong>
-                    </p>
+                    {Object.keys(vehicleData).map((key) => (
+                      <div className="row info-row">
+                        <div className="col-md-3 col-5">
+                          <p className="text-muted mb-0 text-capitalize">
+                            {key.replace(/_/g, " ")}
+                          </p>
+                        </div>
+                        <div className="col">
+                          <p className="mb-0 text-capitalize fw-bold">
+                            {(vehicleData as Record<string, any>)[key]}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                   <div className="mb-4">
                     <small>
