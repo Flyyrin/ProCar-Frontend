@@ -10,11 +10,15 @@ import Alert from "../../components/Alert";
 function Login() {
   const navigate = useNavigate();
   const location = useLocation();
-  const accountCreated = location.state?.account_created;
-  const redirectApiError = location.state?.api_error;
-  const emailConfirmError = location.state?.email_confirm_error;
-  const emailConfirmed = location.state?.email_confirmed;
   var redirect = new URLSearchParams(window.location.search).get("to");
+
+  const [accountCreated] = useState(location.state?.account_created);
+  const [redirectApiError] = useState(location.state?.api_error);
+  const [emailConfirmError] = useState(location.state?.email_confirm_error);
+  const [emailConfirmed] = useState(location.state?.email_confirmed);
+  useEffect(() => {
+    navigate(location.search, { replace: true, state: {} });
+  }, [navigate, location.pathname]);
 
   useEffect(() => {
     setApiError(redirectApiError);

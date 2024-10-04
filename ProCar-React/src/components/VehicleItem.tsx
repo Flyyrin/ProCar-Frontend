@@ -1,3 +1,6 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axiosInstance from "./AxiosInstance";
 import carIcon from "../assets/vehicle/types/car.svg";
 import motorcycleIcon from "../assets/vehicle/types/motorcycle.svg";
 
@@ -9,6 +12,34 @@ function getIconPath(type: string): string {
 }
 
 function VehicleItem({ vehicleData }: { vehicleData: any }) {
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+
+  const handleDeleteVehicle = (event: React.MouseEvent<HTMLDivElement>) => {
+    setLoading(true);
+    axiosInstance
+      .post("/DeleteVehicle", {
+        licensePlate: event.currentTarget.dataset.plate,
+      })
+      .then(function (response) {
+        if (response.status === 200) {
+          setLoading(false);
+          navigate(location.pathname, {
+            state: { vehicle_deleted: true },
+            replace: true,
+          });
+        }
+      })
+      .catch(function () {
+        navigate(location.pathname, {
+          state: { api_error: true },
+          replace: true,
+        });
+        setLoading(false);
+        window.scrollTo(0, 0);
+      });
+  };
+
   return (
     <div className="accordion-item">
       <div className="accordion-header" id={`heading-${vehicleData.id}`}>
@@ -78,6 +109,30 @@ function VehicleItem({ vehicleData }: { vehicleData: any }) {
               ))}
             </>
           ))}
+          <div className="row">
+            <div className="col-md-5 col-xl-3 col-12">
+              <div className="position-relative">
+                <div
+                  onClick={handleDeleteVehicle}
+                  className={`btn w-100 my-3 ${loading && "disabled"}`}
+                  data-plate={vehicleData.kenteken}
+                >
+                  <span className={`${loading && "invisible"}`}>
+                    Voertuig verwijderen
+                  </span>
+                </div>
+                {loading && (
+                  <div className="position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center text-white">
+                    <div
+                      className="spinner-border spinner-border-sm position-absolute"
+                      role="status"
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="col"></div>
+          </div>
         </div>
       </div>
     </div>

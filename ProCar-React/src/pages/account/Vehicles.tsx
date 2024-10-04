@@ -1,13 +1,31 @@
 import Helmet from "react-helmet";
 import { useState, useEffect } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import VehicleItem from "../../components/VehicleItem";
+import Alert from "../../components/Alert";
 
 function Vehicles() {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [loading, setLoading] = useState(true);
   const [vehicleData, setVehicleData] = useState<any[]>([]);
+
+  const [vehicleAdded] = useState(location.state?.vehicle_added);
+  const [vehicleDeleted, setVehicleDeleted] = useState(
+    location.state?.vehicle_deleted
+  );
+  const [apiError, setApiError] = useState(location.state?.api_error);
+  useEffect(() => {
+    setVehicleDeleted(location.state?.vehicle_deleted);
+    setApiError(location.state?.api_error);
+  }, [location.state]);
+
+  useEffect(() => {
+    navigate(location.pathname, { replace: true, state: {} });
+  }, [navigate, location.pathname]);
+
   useEffect(() => {
     setVehicleData([
       {
@@ -62,6 +80,30 @@ function Vehicles() {
         </NavLink>
         <div className="row d-flex justify-content-center">
           <div className="col-lg-9">
+            {apiError && (
+              <Alert
+                alertStatus={{
+                  type: "danger",
+                  message: "Er is iets mis gegaan, probeer het later nog eens.",
+                }}
+              />
+            )}
+            {vehicleAdded && (
+              <Alert
+                alertStatus={{
+                  type: "success",
+                  message: "Voertuig met succes toegevoegd.",
+                }}
+              />
+            )}
+            {vehicleDeleted && (
+              <Alert
+                alertStatus={{
+                  type: "success",
+                  message: "Voertuig met succes verwijderd.",
+                }}
+              />
+            )}
             {loading ? (
               <ul className="list-group">
                 <li className="list-group-item p-4 d-flex justify-content-center align-items-center highlight">

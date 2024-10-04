@@ -2,17 +2,18 @@ import Helmet from "react-helmet";
 import axiosInstance from "../../components/AxiosInstance";
 import "../../styles/Login.css";
 import { useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 import "../../styles/Plate.css";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import Alert from "../../components/Alert";
 
 function AddVehicle() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    place: "",
+    LicensePlate: "",
   });
 
-  const [plateValue, setPlateValue] = useState("");
   const [plateInvalid, setPlateInvalid] = useState(false);
   const plateValidationRegex = /^[a-zA-Z0-9]{6}$/;
 
@@ -21,7 +22,6 @@ function AddVehicle() {
     setPlateSuccess(false);
     var value = event.target.value;
     value = value.replace(/-/g, "");
-    setPlateValue(value);
     setPlateInvalid(!plateValidationRegex.test(value));
     handleFormChange(event);
 
@@ -70,19 +70,17 @@ function AddVehicle() {
   const [apiError, setApiError] = useState(false);
   const [loading, setLoading] = useState(false);
   const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    const tempPlaceInvalid = !plateValidationRegex.test(plateValue);
-    setPlateInvalid(tempPlaceInvalid);
-
     event.preventDefault();
     setApiError(false);
-    if (!tempPlaceInvalid && plateSuccess) {
+    if (!plateInvalid && plateSuccess) {
       setLoading(true);
       axiosInstance
         .post("/addVehicle", formData)
         .then(function (response) {
           if (response.status === 200) {
-            setApiError(false);
-            setLoading(false);
+            navigate("/account/my_vehicles", {
+              state: { vehicle_added: true },
+            });
           }
         })
         .catch(function () {
@@ -126,7 +124,7 @@ function AddVehicle() {
                   <div className="mb-3">
                     <input
                       type="text"
-                      name="plate"
+                      name="LicensePlate"
                       autoComplete="off"
                       placeholder="xx-xx-xx"
                       className="form-control plate text-uppercase text-center border-2 mb-2"
@@ -163,23 +161,31 @@ function AddVehicle() {
                       het kenteken.
                     </small>
                   </div>
-                  <div className="position-relative">
-                    <button
-                      type="submit"
-                      className={`btn w-100 ${loading && "disabled"}`}
+                  <div className="d-flex justify-content-between">
+                    <NavLink
+                      className="btn w-100 me-1 btn-outline"
+                      to="/account/my_vehicles"
                     >
-                      <span className={`${loading && "invisible"}`}>
-                        Toevoegen
-                      </span>
-                    </button>
-                    {loading && (
-                      <div className="position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center text-white">
-                        <div
-                          className="spinner-border spinner-border-sm position-absolute"
-                          role="status"
-                        />
-                      </div>
-                    )}
+                      Annuleren
+                    </NavLink>
+                    <div className="position-relative w-100">
+                      <button
+                        type="submit"
+                        className={`btn w-100 ${loading && "disabled"}`}
+                      >
+                        <span className={`${loading && "invisible"}`}>
+                          Toevoegen
+                        </span>
+                      </button>
+                      {loading && (
+                        <div className="position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center text-white">
+                          <div
+                            className="spinner-border spinner-border-sm position-absolute"
+                            role="status"
+                          />
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </form>
               </div>

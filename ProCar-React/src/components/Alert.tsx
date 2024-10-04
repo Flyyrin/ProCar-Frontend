@@ -12,7 +12,10 @@ function Alert({
   alertStatus?: AlertStatus;
 }) {
   return (
-    <div className={`alert alert-${alertStatus.type}`} role="alert">
+    <div
+      className={`alert alert-${alertStatus.type} alert-dismissible pe-3 fade show`}
+      role="alert"
+    >
       <div className="d-flex align-items-center">
         <i
           className={`bi ${
@@ -22,6 +25,10 @@ function Alert({
           } me-2 h3 mb-0`}
         ></i>
         <span className="align-middle">{alertStatus.message}</span>
+        <i
+          className={`bi bi-x h2 mb-0 click ms-auto`}
+          data-bs-dismiss="alert"
+        ></i>
       </div>
     </div>
   );
