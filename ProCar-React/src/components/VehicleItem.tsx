@@ -11,6 +11,9 @@ function getIconPath(type: string): string {
   return carIcon;
 }
 
+const capitalizeFirstLetter = (str: string) =>
+  str.charAt(0).toUpperCase() + str.slice(1);
+
 function VehicleItem({ vehicleData }: { vehicleData: any }) {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -77,32 +80,34 @@ function VehicleItem({ vehicleData }: { vehicleData: any }) {
           {Object.keys(vehicleData.info).map((key) => (
             <div className="row info-row">
               <div className="col-md-3 col-5">
-                <p className="text-muted mb-0 text-capitalize">
-                  {key.replace(/_/g, " ")}
+                <p className="text-muted mb-0">
+                  {capitalizeFirstLetter(key.replace(/_/g, " "))}
                 </p>
               </div>
               <div className="col">
-                <p className="mb-0 text-capitalize fw-bold">
-                  {vehicleData.info[key]}
+                <p className="mb-0 fw-bold">
+                  {capitalizeFirstLetter(vehicleData.info[key])}
                 </p>
               </div>
             </div>
           ))}
           {Object.keys(vehicleData.extraInfo).map((key) => (
             <>
-              <p className="mb-0 mt-3 text-capitalize">
-                <strong className="highlight">{key}</strong>
+              <p className="mb-0 mt-3">
+                <strong className="highlight">
+                  {capitalizeFirstLetter(key)}
+                </strong>
               </p>
               {Object.keys(vehicleData.extraInfo[key]).map((key2) => (
                 <div className="row info-row">
                   <div className="col-md-3 col-5">
-                    <p className="text-muted mb-0 text-capitalize">
-                      {key2.replace(/_/g, " ")}
+                    <p className="text-muted mb-0">
+                      {capitalizeFirstLetter(key2.replace(/_/g, " "))}
                     </p>
                   </div>
                   <div className="col">
-                    <p className="mb-0 text-capitalize fw-bold">
-                      {vehicleData.extraInfo[key][key2]}
+                    <p className="mb-0 fw-bold">
+                      {capitalizeFirstLetter(vehicleData.extraInfo[key][key2])}
                     </p>
                   </div>
                 </div>

@@ -1,6 +1,7 @@
 import Helmet from "react-helmet";
 import { useState, useEffect } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import axiosInstance from "../../components/AxiosInstance";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import VehicleItem from "../../components/VehicleItem";
@@ -27,38 +28,20 @@ function Vehicles() {
   }, [navigate, location.pathname]);
 
   useEffect(() => {
-    setVehicleData([
-      {
-        id: "2442dHgV3",
-        kenteken: "BA9HPL",
-        voertuigsoort: "Auto",
-        merk: "VOLGSWAGEN",
-        handelsbenaming: "TIGUAN",
-        info: {
-          bouwjaar: "2018",
-          KM_stand: "99.807 km",
-          Brandstof: "benzine",
-          Transmissie: "automaat",
-          Motorinhoud: "4.0 liter",
-          Vermogen: "606 pk",
-        },
-        extraInfo: {
-          basis: {
-            test: "test",
-            test1: "test",
-            test2: "test",
-            test3: "test",
-          },
-          algemeen: {
-            test: "test",
-            test1: "test",
-            test2: "test",
-            test3: "test",
-          },
-        },
-      },
-    ]);
-    setLoading(false);
+    axiosInstance
+      .get(`/GetUserVehicles`)
+      .then(function (response) {
+        if (response.status === 200) {
+          setVehicleData(response.data);
+          setApiError(false);
+          setLoading(false);
+        }
+      })
+      .catch(function () {
+        setApiError(true);
+        setLoading(false);
+        window.scrollTo(0, 0);
+      });
   }, []);
 
   return (
