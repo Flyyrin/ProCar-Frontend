@@ -67,6 +67,7 @@ function AddVehicle() {
     });
   };
 
+  const [limitReached, setLimitReached] = useState(false);
   const [apiError, setApiError] = useState(false);
   const [loading, setLoading] = useState(false);
   const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -83,8 +84,16 @@ function AddVehicle() {
             });
           }
         })
-        .catch(function () {
-          setApiError(true);
+        .catch(function (error) {
+          if (error.response && error.response.status) {
+            if (error.response.status === 406) {
+              setLimitReached(true);
+            } else {
+              setApiError(true);
+            }
+          } else {
+            setApiError(true);
+          }
           setLoading(false);
           window.scrollTo(0, 0);
         });
@@ -110,6 +119,14 @@ function AddVehicle() {
                 alertStatus={{
                   type: "danger",
                   message: "Er is iets mis gegaan, probeer het later nog eens.",
+                }}
+              />
+            )}
+            {limitReached && (
+              <Alert
+                alertStatus={{
+                  type: "danger",
+                  message: "Je hebt het aantal voertuigen limiet bereikt.",
                 }}
               />
             )}

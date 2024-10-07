@@ -21,6 +21,7 @@ function Vehicles() {
   useEffect(() => {
     setVehicleDeleted(location.state?.vehicle_deleted);
     setApiError(location.state?.api_error);
+    location.state?.vehicle_deleted && loadVehicles();
   }, [location.state]);
 
   useEffect(() => {
@@ -28,6 +29,11 @@ function Vehicles() {
   }, [navigate, location.pathname]);
 
   useEffect(() => {
+    loadVehicles();
+  }, []);
+
+  function loadVehicles() {
+    setLoading(true);
     axiosInstance
       .get(`/GetUserVehicles`)
       .then(function (response) {
@@ -42,7 +48,7 @@ function Vehicles() {
         setLoading(false);
         window.scrollTo(0, 0);
       });
-  }, []);
+  }
 
   return (
     <>

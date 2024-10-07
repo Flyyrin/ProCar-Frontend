@@ -5,7 +5,7 @@ import carIcon from "../assets/vehicle/types/car.svg";
 import motorcycleIcon from "../assets/vehicle/types/motorcycle.svg";
 
 function getIconPath(type: string): string {
-  if (type == "Bromfiets") {
+  if (type == "Bromfiets" || type == "Motorfiets") {
     return motorcycleIcon;
   }
   return carIcon;
@@ -22,7 +22,7 @@ function VehicleItem({ vehicleData }: { vehicleData: any }) {
     setLoading(true);
     axiosInstance
       .post("/DeleteVehicle", {
-        licensePlate: event.currentTarget.dataset.plate,
+        vehicleId: event.currentTarget.dataset.id,
       })
       .then(function (response) {
         if (response.status === 200) {
@@ -31,6 +31,7 @@ function VehicleItem({ vehicleData }: { vehicleData: any }) {
             state: { vehicle_deleted: true },
             replace: true,
           });
+          window.scrollTo(0, 0);
         }
       })
       .catch(function () {
@@ -64,7 +65,8 @@ function VehicleItem({ vehicleData }: { vehicleData: any }) {
           <div>
             <p className="mb-0">
               <strong className="highlight">
-                {vehicleData.merk} {vehicleData.handelsbenaming}
+                {capitalizeFirstLetter(vehicleData.merk)}{" "}
+                {vehicleData.handelsbenaming}
               </strong>
             </p>
             <p className="mb-0 fs-6">{vehicleData.kenteken}</p>
@@ -78,7 +80,7 @@ function VehicleItem({ vehicleData }: { vehicleData: any }) {
       >
         <div className="accordion-body">
           {Object.keys(vehicleData.info).map((key) => (
-            <div className="row info-row">
+            <div className="row info-row d-flex align-items-center my-1">
               <div className="col-md-3 col-5">
                 <p className="text-muted mb-0">
                   {capitalizeFirstLetter(key.replace(/_/g, " "))}
@@ -99,7 +101,7 @@ function VehicleItem({ vehicleData }: { vehicleData: any }) {
                 </strong>
               </p>
               {Object.keys(vehicleData.extraInfo[key]).map((key2) => (
-                <div className="row info-row">
+                <div className="row info-row d-flex align-items-center my-1">
                   <div className="col-md-3 col-5">
                     <p className="text-muted mb-0">
                       {capitalizeFirstLetter(key2.replace(/_/g, " "))}
@@ -121,6 +123,7 @@ function VehicleItem({ vehicleData }: { vehicleData: any }) {
                   onClick={handleDeleteVehicle}
                   className={`btn w-100 my-3 ${loading && "disabled"}`}
                   data-plate={vehicleData.kenteken}
+                  data-id={vehicleData.id}
                 >
                   <span className={`${loading && "invisible"}`}>
                     Voertuig verwijderen
