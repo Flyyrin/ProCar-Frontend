@@ -20,6 +20,7 @@ function AddVehicle() {
   const handlePlateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setVehicleData([]);
     setPlateSuccess(false);
+    setDuplicate(false);
     var value = event.target.value;
     value = value.replace(/-/g, "");
     setPlateInvalid(!plateValidationRegex.test(value));
@@ -68,6 +69,7 @@ function AddVehicle() {
   };
 
   const [limitReached, setLimitReached] = useState(false);
+  const [duplicate, setDuplicate] = useState(false);
   const [apiError, setApiError] = useState(false);
   const [loading, setLoading] = useState(false);
   const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -88,6 +90,8 @@ function AddVehicle() {
           if (error.response && error.response.status) {
             if (error.response.status === 406) {
               setLimitReached(true);
+            } else if (error.response.status === 409) {
+              setDuplicate(true);
             } else {
               setApiError(true);
             }
@@ -127,6 +131,14 @@ function AddVehicle() {
                 alertStatus={{
                   type: "danger",
                   message: "Je hebt het aantal voertuigen limiet bereikt.",
+                }}
+              />
+            )}
+            {duplicate && (
+              <Alert
+                alertStatus={{
+                  type: "danger",
+                  message: "Je hebt dit voertuig al toegevoegd.",
                 }}
               />
             )}
