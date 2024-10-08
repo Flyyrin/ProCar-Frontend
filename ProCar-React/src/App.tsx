@@ -14,6 +14,7 @@ import Messages from "./pages/account/Messages";
 import Notifications from "./pages/account/Notifications";
 import Vehicles from "./pages/account/Vehicles";
 import AddVehicle from "./pages/account/AddVehicle";
+import Profile from "./pages/account/Profile";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
         <Route path="/notifications" element={<Notifications />} />
         <Route path="/account/my_vehicles" element={<Vehicles />} />
         <Route path="/account/add_vehicle" element={<AddVehicle />} />
+        <Route path="/account/my_profile" element={<Profile />} />
 
         <Route path="*" element={<NotFound />} />
       </Routes>

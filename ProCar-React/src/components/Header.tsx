@@ -164,7 +164,7 @@ function Header() {
                     </NavLink>
                     <NavLink
                       className="dropdown-item mb-1"
-                      to="/account/profile"
+                      to="/account/my_profile"
                     >
                       Mijn profiel
                     </NavLink>
