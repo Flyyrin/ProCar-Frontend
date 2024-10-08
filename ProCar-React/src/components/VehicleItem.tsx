@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axiosInstance from "./AxiosInstance";
 import carIcon from "../assets/vehicle/types/car.svg";
 import motorcycleIcon from "../assets/vehicle/types/motorcycle.svg";
 
@@ -19,29 +18,9 @@ function VehicleItem({ vehicleData }: { vehicleData: any }) {
   const [loading, setLoading] = useState(false);
 
   const handleDeleteVehicle = (event: React.MouseEvent<HTMLDivElement>) => {
-    setLoading(true);
-    axiosInstance
-      .post("/DeleteVehicle", {
-        vehicleId: event.currentTarget.dataset.id,
-      })
-      .then(function (response) {
-        if (response.status === 200) {
-          setLoading(false);
-          navigate(location.pathname, {
-            state: { vehicle_deleted: true },
-            replace: true,
-          });
-          window.scrollTo(0, 0);
-        }
-      })
-      .catch(function () {
-        navigate(location.pathname, {
-          state: { api_error: true },
-          replace: true,
-        });
-        setLoading(false);
-        window.scrollTo(0, 0);
-      });
+    navigate(location.pathname, {
+      state: { vehicle_prep_deleted: event.currentTarget.dataset.id },
+    });
   };
 
   return (
@@ -80,7 +59,10 @@ function VehicleItem({ vehicleData }: { vehicleData: any }) {
       >
         <div className="accordion-body">
           {Object.keys(vehicleData.info).map((key) => (
-            <div className="row info-row d-flex align-items-center my-1">
+            <div
+              className="row info-row d-flex align-items-center my-1"
+              key={`idd-${vehicleData.id}-${key}`}
+            >
               <div className="col-md-3 col-5">
                 <p className="text-muted mb-0">
                   {capitalizeFirstLetter(key.replace(/_/g, " "))}
@@ -94,14 +76,17 @@ function VehicleItem({ vehicleData }: { vehicleData: any }) {
             </div>
           ))}
           {Object.keys(vehicleData.extraInfo).map((key) => (
-            <>
+            <div key={`id-${vehicleData.id}-${key}`}>
               <p className="mb-0 mt-3">
                 <strong className="highlight">
                   {capitalizeFirstLetter(key)}
                 </strong>
               </p>
               {Object.keys(vehicleData.extraInfo[key]).map((key2) => (
-                <div className="row info-row d-flex align-items-center my-1">
+                <div
+                  className="row info-row d-flex align-items-center my-1"
+                  key={`idin-${vehicleData.id}-${key2}`}
+                >
                   <div className="col-md-3 col-5">
                     <p className="text-muted mb-0">
                       {capitalizeFirstLetter(key2.replace(/_/g, " "))}
@@ -114,7 +99,7 @@ function VehicleItem({ vehicleData }: { vehicleData: any }) {
                   </div>
                 </div>
               ))}
-            </>
+            </div>
           ))}
           <div className="row">
             <div className="col-md-5 col-xl-3 col-12">

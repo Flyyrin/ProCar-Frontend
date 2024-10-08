@@ -6,6 +6,18 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import VehicleItem from "../../components/VehicleItem";
 import Alert from "../../components/Alert";
+import carIcon from "../../assets/vehicle/types/car.svg";
+import motorcycleIcon from "../../assets/vehicle/types/motorcycle.svg";
+
+function getIconPath(type: string): string {
+  if (type == "Bromfiets" || type == "Motorfiets") {
+    return motorcycleIcon;
+  }
+  return carIcon;
+}
+
+const capitalizeFirstLetter = (str: string) =>
+  str?.charAt(0).toUpperCase() + str?.slice(1);
 
 function Vehicles() {
   const navigate = useNavigate();
@@ -17,11 +29,17 @@ function Vehicles() {
   const [vehicleDeleted, setVehicleDeleted] = useState(
     location.state?.vehicle_deleted
   );
+  const [deleteVehicleId, setVehiclePrepDeleted] = useState(
+    location.state?.vehicle_prep_deleted
+  );
+  const [showRemoveModal, setShowRemoveModal] = useState(false);
   const [apiError, setApiError] = useState(location.state?.api_error);
   useEffect(() => {
     setVehicleDeleted(location.state?.vehicle_deleted);
+    setVehiclePrepDeleted(location.state?.vehicle_prep_deleted);
     setApiError(location.state?.api_error);
     location.state?.vehicle_deleted && loadVehicles();
+    location.state?.vehicle_prep_deleted && setShowRemoveModal(true);
   }, [location.state]);
 
   useEffect(() => {
@@ -49,6 +67,33 @@ function Vehicles() {
         window.scrollTo(0, 0);
       });
   }
+
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const handleDeleteVehicle = () => {
+    setDeleteLoading(true);
+    setApiError(false);
+    axiosInstance
+      .post("/DeleteVehicle", {
+        vehicleId: deleteVehicleId,
+      })
+      .then(function (response) {
+        if (response.status === 200) {
+          setDeleteLoading(false);
+          setShowRemoveModal(false);
+          navigate(location.pathname, {
+            state: { vehicle_deleted: true },
+            replace: true,
+          });
+          window.scrollTo(0, 0);
+        }
+      })
+      .catch(function () {
+        setApiError(true);
+        setDeleteLoading(false);
+        setShowRemoveModal(false);
+        window.scrollTo(0, 0);
+      });
+  };
 
   return (
     <>
@@ -102,7 +147,7 @@ function Vehicles() {
             ) : vehicleData.length > 0 ? (
               <div className="accordion">
                 {vehicleData.map((vehicle) => (
-                  <VehicleItem vehicleData={vehicle} />
+                  <VehicleItem vehicleData={vehicle} key={vehicle.id} />
                 ))}
               </div>
             ) : (
@@ -116,6 +161,95 @@ function Vehicles() {
             )}
           </div>
         </div>
+
+        {showRemoveModal && deleteVehicleId && (
+          <>
+            <div
+              className="modal show d-block"
+              id="removeModal"
+              aria-labelledby="removeModalLabel"
+              aria-hidden="true"
+            >
+              <div className="modal-dialog modal-dialog-centered">
+                <div className="modal-content">
+                  <div className="modal-header border-0">
+                    <h5 className="modal-title" id="removeModalLabel">
+                      Voertuig verwijderen
+                    </h5>
+                  </div>
+                  <div className="modal-body d-flex align-items-center justify-content-center py-1">
+                    <div className="notification-image-container me-3 flex-shrink-0">
+                      <img
+                        src={getIconPath(
+                          vehicleData.find(
+                            (vehicle) => vehicle.id === deleteVehicleId
+                          )?.voertuigsoort
+                        )}
+                        className="w-100"
+                        alt="Image"
+                      ></img>
+                    </div>
+                    <div>
+                      <p className="mb-0">
+                        <strong className="highlight">
+                          {capitalizeFirstLetter(
+                            vehicleData.find(
+                              (vehicle) => vehicle.id === deleteVehicleId
+                            )?.merk
+                          )}{" "}
+                          {
+                            vehicleData.find(
+                              (vehicle) => vehicle.id === deleteVehicleId
+                            )?.handelsbenaming
+                          }
+                        </strong>
+                      </p>
+                      <p className="mb-0 fs-6">
+                        {capitalizeFirstLetter(
+                          vehicleData.find(
+                            (vehicle) => vehicle.id === deleteVehicleId
+                          )?.kenteken
+                        )}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="modal-footer border-0">
+                    <div className="d-flex justify-content-between w-100">
+                      <button
+                        className="btn w-100 me-1 btn-outline"
+                        type="button"
+                        onClick={() => {
+                          setShowRemoveModal(false);
+                        }}
+                      >
+                        Annuleren
+                      </button>
+                      <div className="position-relative ms-1 w-100">
+                        <button
+                          type="submit"
+                          className={`btn w-100 ${deleteLoading && "disabled"}`}
+                          onClick={handleDeleteVehicle}
+                        >
+                          <span className={`${deleteLoading && "invisible"}`}>
+                            Verwijder voertuig
+                          </span>
+                        </button>
+                        {deleteLoading && (
+                          <div className="position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center text-white">
+                            <div
+                              className="spinner-border spinner-border-sm position-absolute"
+                              role="status"
+                            />
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
       </div>
       <Footer />
     </>
