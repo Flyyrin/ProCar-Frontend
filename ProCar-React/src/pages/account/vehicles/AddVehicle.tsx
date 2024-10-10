@@ -1,12 +1,12 @@
 import Helmet from "react-helmet";
-import axiosInstance from "../../components/AxiosInstance";
-import "../../styles/Login.css";
+import axiosInstance from "../../../components/AxiosInstance";
+import "../../../styles/Login.css";
 import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import "../../styles/Plate.css";
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
-import Alert from "../../components/Alert";
+import "../../../styles/Plate.css";
+import Header from "../../../components/Header";
+import Footer from "../../../components/Footer";
+import Alert from "../../../components/Alert";
 
 function AddVehicle() {
   const navigate = useNavigate();
@@ -160,6 +160,7 @@ function AddVehicle() {
                       maxLength={8}
                       size={10}
                       onChange={handlePlateChange}
+                      disabled={loading}
                     />
                     <div
                       className={`invalid-feedback ${

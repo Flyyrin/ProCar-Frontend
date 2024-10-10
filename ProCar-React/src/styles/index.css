@@ -109,3 +109,8 @@ input:focus {
 .modal.show {
   background-color: #00000050;
 }
+
+.disabled-text {
+  cursor: auto;
+  color: #8b76d6;
+}

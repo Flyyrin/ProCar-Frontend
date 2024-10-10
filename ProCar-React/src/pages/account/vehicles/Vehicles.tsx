@@ -1,13 +1,13 @@
 import Helmet from "react-helmet";
 import { useState, useEffect } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import axiosInstance from "../../components/AxiosInstance";
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
-import VehicleItem from "../../components/VehicleItem";
-import Alert from "../../components/Alert";
-import carIcon from "../../assets/vehicle/types/car.svg";
-import motorcycleIcon from "../../assets/vehicle/types/motorcycle.svg";
+import axiosInstance from "../../../components/AxiosInstance";
+import Header from "../../../components/Header";
+import Footer from "../../../components/Footer";
+import VehicleItem from "../../../components/VehicleItem";
+import Alert from "../../../components/Alert";
+import carIcon from "../../../assets/vehicle/types/car.svg";
+import motorcycleIcon from "../../../assets/vehicle/types/motorcycle.svg";
 
 function getIconPath(type: string): string {
   if (type == "Bromfiets" || type == "Motorfiets") {

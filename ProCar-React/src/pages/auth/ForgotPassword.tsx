@@ -110,7 +110,7 @@ function ForgotPassword() {
                       } `}
                       id="email"
                       onChange={handleEmailChange}
-                      disabled={success}
+                      disabled={success || loading}
                     />
                     <div
                       className={`invalid-feedback ${
