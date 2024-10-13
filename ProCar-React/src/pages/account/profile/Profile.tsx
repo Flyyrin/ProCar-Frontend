@@ -145,12 +145,9 @@ function Profile() {
                     <div className="col">
                       <p className="mb-0 fw-bold d-flex">
                         {userData?.email}
-                        <NavLink
-                          className="mb-0 btn-outline border-0 ms-auto"
-                          to={"/account/change_email"}
-                        >
-                          <strong>Wijzigen</strong>
-                        </NavLink>
+                        <p className="mb-0 btn-outline border-0 ms-auto">
+                          <strong className="disabled-text">Wijzigen</strong>
+                        </p>
                       </p>
                     </div>
                   </div>
