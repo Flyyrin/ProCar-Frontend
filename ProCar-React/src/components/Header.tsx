@@ -19,12 +19,7 @@ function Header() {
     window.location.href = redirect;
   };
 
-  const [signedIn, setSignedIn] = useState(false);
-  const [apiError, setApiError] = useState(false);
-  const [username, SetUsername] = useState("");
-  const [unreadMessages, setUnreadMessages] = useState(false);
-  const [unreadNotifications, setUnreadNotifications] = useState(false);
-  useEffect(() => {
+  const getHeaderStatus = () => {
     axiosInstance
       .get("/GetHeaderStatus", {
         headers: {
@@ -63,6 +58,19 @@ function Header() {
         }
         window.scrollTo(0, 0);
       });
+  };
+
+  const [signedIn, setSignedIn] = useState(false);
+  const [apiError, setApiError] = useState(false);
+  const [username, SetUsername] = useState("");
+  const [unreadMessages, setUnreadMessages] = useState(false);
+  const [unreadNotifications, setUnreadNotifications] = useState(false);
+  useEffect(() => {
+    getHeaderStatus();
+    const intervalId = setInterval(() => {
+      getHeaderStatus();
+    }, 30000);
+    return () => clearInterval(intervalId);
   }, []);
 
   return (
@@ -88,13 +96,14 @@ function Header() {
                 >
                   <div className="d-flex align-items-center">
                     <i className="bi bi-chat h5 mb-0 me-1 position-relative">
-                      {unreadMessages && (
-                        <img
-                          src={indicator}
-                          alt="indicator"
-                          className="img-fluid position-absolute indicator text-danger"
-                        />
-                      )}
+                      {unreadMessages &&
+                        window.location.pathname != "/messages" && (
+                          <img
+                            src={indicator}
+                            alt="indicator"
+                            className="img-fluid position-absolute indicator text-danger"
+                          />
+                        )}
                     </i>
                     <span className="align-middle d-none d-md-flex">
                       Berichten
@@ -110,7 +119,9 @@ function Header() {
                 >
                   <div className="d-flex align-items-center">
                     <i className="bi bi-bell h5 mb-0 me-1 position-relative">
-                      {(!signedIn || unreadNotifications) && (
+                      {(!signedIn ||
+                        (unreadNotifications &&
+                          window.location.pathname != "/notifications")) && (
                         <img
                           src={indicator}
                           alt="indicator"

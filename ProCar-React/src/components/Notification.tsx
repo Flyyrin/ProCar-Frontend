@@ -24,43 +24,27 @@ function timeAgo(timestamp: string | number): string {
   }
 }
 
-interface NotificationStatus {
-  image: string;
-  timestamp: string;
-  message: string;
-  button?: string;
-  source?: string;
-}
-
-function Notification({
-  notificationStatus = {
-    image: "",
-    timestamp: "",
-    message: "",
-  },
-}: {
-  notificationStatus?: NotificationStatus;
-}) {
+function Notification({ notificationData }: { notificationData: any }) {
   return (
     <li className="list-group-item p-3">
       <div className="d-flex d-flex align-items-center">
         <div className="notification-image-container me-3 flex-shrink-0">
           <img
-            src={notificationStatus.image}
+            src={notificationData.imageSource}
             className="h-100"
             alt="Image"
           ></img>
         </div>
         <div className="">
           <p className="text-muted mb-0 fs-6">
-            <small>{timeAgo(notificationStatus.timestamp)}</small>
+            <small>{timeAgo(notificationData.createdDate)}</small>
           </p>
-          <p className="mb-0">{notificationStatus.message}</p>
+          <p className="mb-0">{notificationData.content}</p>
           <NavLink
             className="mb-0 btn-outline border-0"
-            to={`${notificationStatus.source}`}
+            to={`${notificationData.buttonTarget}`}
           >
-            <strong className="">{notificationStatus.button}</strong>
+            <strong className="">{notificationData.buttonText}</strong>
           </NavLink>
         </div>
         <div className="ms-auto d-flex align-items-center">
