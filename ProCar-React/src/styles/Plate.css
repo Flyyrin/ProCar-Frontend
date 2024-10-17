@@ -21,7 +21,8 @@
 }
 
 .plate:focus,
-.plate:active {
+.plate:active,
+.plate:disabled {
   background-color: #ffd101;
   border-color: black !important;
 }

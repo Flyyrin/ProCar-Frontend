@@ -14,10 +14,10 @@ function Notifications() {
   const [apiError, setApiError] = useState(false);
 
   useEffect(() => {
-    loadVehicles();
+    loadNotifications();
   }, []);
 
-  function loadVehicles() {
+  function loadNotifications() {
     setLoading(true);
     axiosInstance
       .get(`/GetUserNotifications`)

@@ -1,4 +1,5 @@
 import { NavLink } from "react-router-dom";
+import axiosInstance from "./AxiosInstance";
 
 function timeAgo(timestamp: string | number): string {
   const now = new Date();
@@ -25,6 +26,19 @@ function timeAgo(timestamp: string | number): string {
 }
 
 function Notification({ notificationData }: { notificationData: any }) {
+  const handleDeleteNotification = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    const listItem = event.currentTarget.closest(".list-group-item");
+    listItem?.remove();
+
+    axiosInstance
+      .post("/DeleteNotification", {
+        notificationId: notificationData.id,
+      })
+      .catch(function () {});
+  };
+
   return (
     <li className="list-group-item p-3">
       <div className="d-flex d-flex align-items-center">
@@ -49,13 +63,17 @@ function Notification({ notificationData }: { notificationData: any }) {
         </div>
         <div className="ms-auto d-flex align-items-center">
           <i
-            className="bi bi-three-dots-vertical h5 ms-2"
+            className="bi bi-three-dots-vertical h5 ms-2 click"
             data-bs-toggle="dropdown"
             aria-expanded="false"
           ></i>
           <ul className="dropdown-menu dropdown-menu-end">
             <li>
-              <button className="dropdown-item" type="button">
+              <button
+                className="dropdown-item"
+                type="button"
+                onClick={handleDeleteNotification}
+              >
                 Verwijder melding
               </button>
             </li>
