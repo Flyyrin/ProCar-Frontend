@@ -161,6 +161,7 @@ function AddVehicle() {
                       size={10}
                       onChange={handlePlateChange}
                       disabled={loading}
+                      autoFocus
                     />
                     <div
                       className={`invalid-feedback ${
