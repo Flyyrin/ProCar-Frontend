@@ -215,7 +215,7 @@ function Header() {
         </div>
       </nav>
       {apiError && (
-        <nav className="mx-5 mt-1">
+        <nav className="mx-3 mx-md-5 mt-1">
           <Alert
             alertStatus={{
               type: "danger",
