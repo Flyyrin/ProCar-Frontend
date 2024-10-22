@@ -45,39 +45,73 @@ function Home() {
                   data-bs-slide-to="0"
                   className="active"
                   aria-current="true"
-                  aria-label="Pic 0"
-                ></button>
-                <button
-                  type="button"
-                  data-bs-target="#vehicleAdCarousel"
-                  data-bs-slide-to="1"
                   aria-label="Pic 1"
                 ></button>
                 <button
                   type="button"
                   data-bs-target="#vehicleAdCarousel"
-                  data-bs-slide-to="2"
+                  data-bs-slide-to="1"
                   aria-label="Pic 2"
+                ></button>
+                <button
+                  type="button"
+                  data-bs-target="#vehicleAdCarousel"
+                  data-bs-slide-to="2"
+                  aria-label="Pic 3"
+                ></button>
+                <button
+                  type="button"
+                  data-bs-target="#vehicleAdCarousel"
+                  data-bs-slide-to="3"
+                  aria-label="Pic 4"
+                ></button>
+                <button
+                  type="button"
+                  data-bs-target="#vehicleAdCarousel"
+                  data-bs-slide-to="4"
+                  aria-label="Pic 5"
                 ></button>
               </div>
               <div className="carousel-inner">
                 <div className="carousel-item active" data-bs-interval="15000">
-                  <img
-                    src="https://images.marktplaats.com/api/v1/listing-mp-p/images/92/92c23e73-d7e9-4056-9a9e-0b8484510c2e?rule=ecg_mp_eps$_85"
-                    alt="..."
-                  />
+                  <div className="d-flex justify-content-center h-100">
+                    <img
+                      src="https://images.marktplaats.com/api/v1/listing-mp-p/images/92/92c23e73-d7e9-4056-9a9e-0b8484510c2e?rule=ecg_mp_eps$_85"
+                      alt="..."
+                    />
+                  </div>
                 </div>
                 <div className="carousel-item" data-bs-interval="15000">
-                  <img
-                    src="https://images.marktplaats.com/api/v1/listing-mp-p/images/7b/7b0db25e-92ab-475a-b7de-ab3c7c03cc0b?rule=ecg_mp_eps$_85"
-                    alt="..."
-                  />
+                  <div className="d-flex justify-content-center h-100">
+                    <img
+                      src="https://images.marktplaats.com/api/v1/listing-mp-p/images/7b/7b0db25e-92ab-475a-b7de-ab3c7c03cc0b?rule=ecg_mp_eps$_85"
+                      alt="..."
+                    />
+                  </div>
                 </div>
                 <div className="carousel-item" data-bs-interval="15000">
-                  <img
-                    src="https://images.marktplaats.com/api/v1/listing-mp-p/images/33/33152175-7dbb-4bbf-9758-99cac11a88bf?rule=ecg_mp_eps$_85"
-                    alt="..."
-                  />
+                  <div className="d-flex justify-content-center h-100">
+                    <img
+                      src="https://images.marktplaats.com/api/v1/listing-mp-p/images/33/33152175-7dbb-4bbf-9758-99cac11a88bf?rule=ecg_mp_eps$_85"
+                      alt="..."
+                    />
+                  </div>
+                </div>
+                <div className="carousel-item" data-bs-interval="15000">
+                  <div className="d-flex justify-content-center h-100">
+                    <img
+                      src="https://placehold.co/400x700?text=Test+Image"
+                      alt="..."
+                    />
+                  </div>
+                </div>
+                <div className="carousel-item" data-bs-interval="15000">
+                  <div className="d-flex justify-content-center h-100">
+                    <img
+                      src="https://placehold.co/700x700?text=Test+Image"
+                      alt="..."
+                    />
+                  </div>
                 </div>
               </div>
               <button
