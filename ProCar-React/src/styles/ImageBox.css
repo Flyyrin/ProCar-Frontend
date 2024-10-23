@@ -1,0 +1,45 @@
+.imageBox {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 2/1;
+}
+
+.mainContainer,
+.secondContainer {
+  height: 100%;
+  width: 50%;
+  display: inline-block;
+}
+
+.secondContainerRow {
+  width: 100%;
+  height: 50%;
+}
+
+.secondInnerContainer {
+  width: 50%;
+  height: 100%;
+  display: inline-block;
+}
+
+.InnerContainer {
+  height: 100%;
+  width: 100%;
+  padding: 0.5rem;
+}
+
+.imageBox .uploadBox {
+  width: 100%;
+  height: 100%;
+  border: 3px solid #dee2e6;
+  border-radius: 7px;
+  background-image: url("/icons/uploadBox.svg");
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  background-size: 2rem;
+  cursor: pointer;
+}
+
+.imageBox .uploadBox.main {
+  background-size: 4rem;
+}
