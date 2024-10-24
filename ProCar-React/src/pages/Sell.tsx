@@ -7,55 +7,70 @@ import { useState } from "react";
 import "../styles/ImageBox.css";
 
 function Sell() {
-  const [formData, setFormData] = useState({
-    email: "",
-  });
-
-  const [emailValue, setEmailValue] = useState("");
-  const [emailInvalid, setEmailInvalid] = useState(false);
-  const emailValidationRegex =
-    /^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
-
-  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    setEmailValue(value);
-    setEmailInvalid(!emailValidationRegex.test(value));
-    handleFormChange(event);
-  };
-
-  const handleFormChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-
   const [apiError, setApiError] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    const tempEmailInvalid = !emailValidationRegex.test(emailValue);
-    setEmailInvalid(tempEmailInvalid);
+  const [invalidFileSize, setInvalidFileSize] = useState(false);
+  const [invalidFileType, setInvalidFileType] = useState(false);
 
-    event.preventDefault();
-    setApiError(false);
-    if (!tempEmailInvalid) {
-      setLoading(true);
-      axiosInstance
-        .post("/forgotPassword", formData)
-        .then(function (response) {
-          if (response.status === 200) {
-            setSuccess(true);
-            setApiError(false);
-            setLoading(false);
-          }
-        })
-        .catch(function () {
-          setApiError(true);
-          setLoading(false);
-          window.scrollTo(0, 0);
-        });
+  const handleUploadBoxClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    setInvalidFileType(false);
+    setInvalidFileType(false);
+    const target = e.target as HTMLElement;
+    const nearestInput = target
+      .closest(".innerContainer")
+      ?.querySelector('input[type="file"]');
+
+    if (nearestInput) {
+      (nearestInput as HTMLInputElement).click();
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const fileInput = e.target;
+    const file = fileInput.files?.[0];
+
+    if (file) {
+      const fileSizeMB = file.size / (1024 * 1024);
+      const fileType = file.type;
+
+      const validTypes = ["image/jpeg", "image/jpg", "image/png"];
+      const isValidType = validTypes.includes(fileType);
+
+      const maxSize = 300;
+      const isValidSize = fileSizeMB <= maxSize;
+
+      if (!isValidType) {
+        setInvalidFileType(true);
+        fileInput.value = "";
+        return;
+      }
+
+      if (!isValidSize) {
+        setInvalidFileSize(true);
+        alert("File size exceeds 300MB.");
+        fileInput.value = "";
+        return;
+      }
+
+      const imageUrl = URL.createObjectURL(file);
+
+      const target = e.target as HTMLElement;
+      const nearestUploadBoxPreview = target
+        .closest(".innerContainer")
+        ?.querySelector(".uploadBoxPreviewImg");
+
+      if (nearestUploadBoxPreview) {
+        (nearestUploadBoxPreview as HTMLInputElement).src = imageUrl;
+      }
+
+      const nearestUploadBoxPreviewContainer = target
+        .closest(".innerContainer")
+        ?.querySelector(".uploadBoxPreviewContainer");
+
+      if (nearestUploadBoxPreviewContainer) {
+        (nearestUploadBoxPreviewContainer as HTMLInputElement).classList.remove(
+          "d-none"
+        );
+      }
     }
   };
 
@@ -82,7 +97,7 @@ function Sell() {
             )}
             <div className="card">
               <div className="card-body">
-                <form onSubmit={handleFormSubmit} noValidate>
+                <form noValidate>
                   <h4 className="fw-bold mb-0">Foto's</h4>
                   <p>
                     <small>
@@ -93,39 +108,95 @@ function Sell() {
                   </p>
                   <div className="row">
                     <div className="col col-md-8">
+                      {invalidFileType && (
+                        <>
+                          <div className="ms-2">
+                            <Alert
+                              alertStatus={{
+                                type: "danger",
+                                message:
+                                  "Ongeldig bestand (alleen .jpg, .jpeg of .png).",
+                              }}
+                            />
+                          </div>
+                        </>
+                      )}
+                      {invalidFileSize && (
+                        <>
+                          <div className="ms-2">
+                            <Alert
+                              alertStatus={{
+                                type: "danger",
+                                message: "Ongeldig bestand (maximaal 300 mb).",
+                              }}
+                            />
+                          </div>
+                        </>
+                      )}
                       <div className="imageBox">
                         <div className="mainContainer">
-                          <div className="InnerContainer">
-                            <input name="image1" type="file" hidden />
-                            <div className="uploadBox main"></div>
+                          <div className="innerContainer">
+                            <input
+                              name="image1"
+                              type="file"
+                              accept=".jpg, .jpeg, .png"
+                              onChange={handleFileChange}
+                              hidden
+                            />
+                            <div className="uploadBox main">
+                              <div
+                                className="uploadBoxHitbox"
+                                onClick={handleUploadBoxClick}
+                              ></div>
+                              <div className="uploadBoxPreviewContainer d-none">
+                                <div className="uploadBoxPreviewPanel">
+                                  <i className="bi bi-trash3-fill h3"></i>
+                                </div>
+                                <div className="uploadBoxPreview">
+                                  <img
+                                    className="uploadBoxPreviewImg"
+                                    src=""
+                                  ></img>
+                                </div>
+                              </div>
+                              <div className="innerLabel">1</div>
+                            </div>
                           </div>
                         </div>
                         <div className="secondContainer">
                           <div className="secondContainerRow">
                             <div className="secondInnerContainer">
-                              <div className="InnerContainer">
+                              <div className="innerContainer">
                                 <input name="image2" type="file" hidden />
-                                <div className="uploadBox"></div>
+                                <div className="uploadBox">
+                                  <div className="innerLabel">2</div>
+                                </div>
                               </div>
                             </div>
                             <div className="secondInnerContainer">
-                              <div className="InnerContainer">
+                              <div className="innerContainer">
                                 <input name="image3" type="file" hidden />
-                                <div className="uploadBox"></div>
+                                <div className="uploadBox">
+                                  <div className="innerLabel">3</div>
+                                </div>
                               </div>
                             </div>
                           </div>
                           <div className="secondContainerRow">
                             <div className="secondInnerContainer">
-                              <div className="InnerContainer">
+                              <div className="innerContainer">
                                 <input name="image4" type="file" hidden />
-                                <div className="uploadBox"></div>
+                                <div className="uploadBox">
+                                  <div className="innerLabel">4</div>
+                                </div>
                               </div>
                             </div>
                             <div className="secondInnerContainer">
-                              <div className="InnerContainer">
+                              <div className="innerContainer">
                                 <input name="image5" type="file" hidden />
-                                <div className="uploadBox"></div>
+                                <div className="uploadBox">
+                                  <div className="innerLabel">5</div>
+                                </div>
                               </div>
                             </div>
                           </div>
