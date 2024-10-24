@@ -67,6 +67,7 @@
   width: 100%;
   background-color: #fff;
   border-radius: 4px;
+  display: none;
 }
 
 .uploadBoxPreview {
@@ -86,7 +87,19 @@
   object-fit: contain;
 }
 
-.uploadBoxPreviewPanel {
+.uploadBoxPreviewPanelLeft {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 0.2rem 0.4rem 0.2rem 0.35rem;
+  background-color: #dee2e6;
+  border-bottom-right-radius: 7px;
+  cursor: pointer;
+  display: block;
+  z-index: 5;
+}
+
+.uploadBoxPreviewPanelRight {
   position: absolute;
   top: 0;
   right: 0;
@@ -96,8 +109,4 @@
   cursor: pointer;
   display: block;
   z-index: 5;
-}
-
-.uploadBoxPreview:hover > .card-body {
-  background-color: black;
 }

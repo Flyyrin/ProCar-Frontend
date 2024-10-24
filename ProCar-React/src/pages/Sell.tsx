@@ -67,10 +67,90 @@ function Sell() {
         ?.querySelector(".uploadBoxPreviewContainer");
 
       if (nearestUploadBoxPreviewContainer) {
-        (nearestUploadBoxPreviewContainer as HTMLInputElement).classList.remove(
-          "d-none"
-        );
+        (nearestUploadBoxPreviewContainer as HTMLInputElement).style.display =
+          "flex";
       }
+    }
+  };
+
+  const handlePanelRemoveClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const target = e.target as HTMLElement;
+
+    const nearestInput = target
+      .closest(".innerContainer")
+      ?.querySelector('input[type="file"]');
+
+    if (nearestInput) {
+      (nearestInput as HTMLInputElement).value = "";
+    }
+
+    const nearestUploadBoxPreviewContainer = target
+      .closest(".innerContainer")
+      ?.querySelector(".uploadBoxPreviewContainer");
+
+    if (nearestUploadBoxPreviewContainer) {
+      (nearestUploadBoxPreviewContainer as HTMLInputElement).style.display =
+        "none";
+    }
+  };
+
+  const handlePanelRotateClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const target = e.target as HTMLElement;
+
+    const nearestInput = target
+      .closest(".innerContainer")
+      ?.querySelector('input[type="file"]');
+
+    const nearestInputElement = nearestInput as HTMLInputElement;
+    if (nearestInput && nearestInputElement.files) {
+      const file = nearestInputElement.files[0];
+
+      const img = document.createElement("img");
+      img.src = URL.createObjectURL(file);
+
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+
+        canvas.width = img.height;
+        canvas.height = img.width;
+
+        ctx?.translate(canvas.width / 2, canvas.height / 2);
+        ctx?.rotate((90 * Math.PI) / 180);
+
+        ctx?.drawImage(img, -img.width / 2, -img.height / 2);
+
+        const rotatedImageUrl = canvas.toDataURL(file.type);
+
+        const nearestUploadBoxPreview = target
+          .closest(".innerContainer")
+          ?.querySelector(".uploadBoxPreviewImg") as HTMLImageElement;
+
+        if (nearestUploadBoxPreview) {
+          nearestUploadBoxPreview.src = rotatedImageUrl;
+        }
+
+        fetch(rotatedImageUrl)
+          .then((res) => res.blob())
+          .then((rotatedBlob) => {
+            const rotatedFile = new File([rotatedBlob], file.name, {
+              type: file.type,
+              lastModified: Date.now(),
+            });
+
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(rotatedFile);
+            nearestInputElement.files = dataTransfer.files;
+          });
+      };
+    }
+
+    const nearestUploadBoxPreview = target
+      .closest(".innerContainer")
+      ?.querySelector(".uploadBoxPreviewImg");
+
+    if (nearestUploadBoxPreview) {
+      (nearestUploadBoxPreview as HTMLInputElement).src = "";
     }
   };
 
@@ -148,8 +228,17 @@ function Sell() {
                                 className="uploadBoxHitbox"
                                 onClick={handleUploadBoxClick}
                               ></div>
-                              <div className="uploadBoxPreviewContainer d-none">
-                                <div className="uploadBoxPreviewPanel">
+                              <div className="uploadBoxPreviewContainer">
+                                <div
+                                  className="uploadBoxPreviewPanelLeft"
+                                  onClick={handlePanelRotateClick}
+                                >
+                                  <i className="bi bi-arrow-clockwise h3"></i>
+                                </div>
+                                <div
+                                  className="uploadBoxPreviewPanelRight"
+                                  onClick={handlePanelRemoveClick}
+                                >
                                   <i className="bi bi-trash3-fill h3"></i>
                                 </div>
                                 <div className="uploadBoxPreview">
@@ -167,16 +256,76 @@ function Sell() {
                           <div className="secondContainerRow">
                             <div className="secondInnerContainer">
                               <div className="innerContainer">
-                                <input name="image2" type="file" hidden />
+                                <input
+                                  name="image2"
+                                  type="file"
+                                  accept=".jpg, .jpeg, .png"
+                                  onChange={handleFileChange}
+                                  hidden
+                                />
                                 <div className="uploadBox">
+                                  <div
+                                    className="uploadBoxHitbox"
+                                    onClick={handleUploadBoxClick}
+                                  ></div>
+                                  <div className="uploadBoxPreviewContainer">
+                                    <div
+                                      className="uploadBoxPreviewPanelLeft"
+                                      onClick={handlePanelRotateClick}
+                                    >
+                                      <i className="bi bi-arrow-clockwise h3"></i>
+                                    </div>
+                                    <div
+                                      className="uploadBoxPreviewPanelRight"
+                                      onClick={handlePanelRemoveClick}
+                                    >
+                                      <i className="bi bi-trash3-fill h3"></i>
+                                    </div>
+                                    <div className="uploadBoxPreview">
+                                      <img
+                                        className="uploadBoxPreviewImg"
+                                        src=""
+                                      ></img>
+                                    </div>
+                                  </div>
                                   <div className="innerLabel">2</div>
                                 </div>
                               </div>
                             </div>
                             <div className="secondInnerContainer">
                               <div className="innerContainer">
-                                <input name="image3" type="file" hidden />
+                                <input
+                                  name="image3"
+                                  type="file"
+                                  accept=".jpg, .jpeg, .png"
+                                  onChange={handleFileChange}
+                                  hidden
+                                />
                                 <div className="uploadBox">
+                                  <div
+                                    className="uploadBoxHitbox"
+                                    onClick={handleUploadBoxClick}
+                                  ></div>
+                                  <div className="uploadBoxPreviewContainer">
+                                    <div
+                                      className="uploadBoxPreviewPanelLeft"
+                                      onClick={handlePanelRotateClick}
+                                    >
+                                      <i className="bi bi-arrow-clockwise h3"></i>
+                                    </div>
+                                    <div
+                                      className="uploadBoxPreviewPanelRight"
+                                      onClick={handlePanelRemoveClick}
+                                    >
+                                      <i className="bi bi-trash3-fill h3"></i>
+                                    </div>
+                                    <div className="uploadBoxPreview">
+                                      <img
+                                        className="uploadBoxPreviewImg"
+                                        src=""
+                                      ></img>
+                                    </div>
+                                  </div>
                                   <div className="innerLabel">3</div>
                                 </div>
                               </div>
@@ -185,16 +334,76 @@ function Sell() {
                           <div className="secondContainerRow">
                             <div className="secondInnerContainer">
                               <div className="innerContainer">
-                                <input name="image4" type="file" hidden />
+                                <input
+                                  name="image4"
+                                  type="file"
+                                  accept=".jpg, .jpeg, .png"
+                                  onChange={handleFileChange}
+                                  hidden
+                                />
                                 <div className="uploadBox">
+                                  <div
+                                    className="uploadBoxHitbox"
+                                    onClick={handleUploadBoxClick}
+                                  ></div>
+                                  <div className="uploadBoxPreviewContainer">
+                                    <div
+                                      className="uploadBoxPreviewPanelLeft"
+                                      onClick={handlePanelRotateClick}
+                                    >
+                                      <i className="bi bi-arrow-clockwise h3"></i>
+                                    </div>
+                                    <div
+                                      className="uploadBoxPreviewPanelRight"
+                                      onClick={handlePanelRemoveClick}
+                                    >
+                                      <i className="bi bi-trash3-fill h3"></i>
+                                    </div>
+                                    <div className="uploadBoxPreview">
+                                      <img
+                                        className="uploadBoxPreviewImg"
+                                        src=""
+                                      ></img>
+                                    </div>
+                                  </div>
                                   <div className="innerLabel">4</div>
                                 </div>
                               </div>
                             </div>
                             <div className="secondInnerContainer">
                               <div className="innerContainer">
-                                <input name="image5" type="file" hidden />
+                                <input
+                                  name="image5"
+                                  type="file"
+                                  accept=".jpg, .jpeg, .png"
+                                  onChange={handleFileChange}
+                                  hidden
+                                />
                                 <div className="uploadBox">
+                                  <div
+                                    className="uploadBoxHitbox"
+                                    onClick={handleUploadBoxClick}
+                                  ></div>
+                                  <div className="uploadBoxPreviewContainer">
+                                    <div
+                                      className="uploadBoxPreviewPanelLeft"
+                                      onClick={handlePanelRotateClick}
+                                    >
+                                      <i className="bi bi-arrow-clockwise h3"></i>
+                                    </div>
+                                    <div
+                                      className="uploadBoxPreviewPanelRight"
+                                      onClick={handlePanelRemoveClick}
+                                    >
+                                      <i className="bi bi-trash3-fill h3"></i>
+                                    </div>
+                                    <div className="uploadBoxPreview">
+                                      <img
+                                        className="uploadBoxPreviewImg"
+                                        src=""
+                                      ></img>
+                                    </div>
+                                  </div>
                                   <div className="innerLabel">5</div>
                                 </div>
                               </div>
