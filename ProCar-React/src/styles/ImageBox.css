@@ -47,6 +47,10 @@
   background-size: 2rem;
 }
 
+.imageBox .uploadBox.invalid {
+  border-color: #dc3545;
+}
+
 .imageBox .uploadBox.main {
   background-size: 4rem;
 }

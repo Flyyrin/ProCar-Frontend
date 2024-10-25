@@ -1,6 +1,7 @@
 .btn:focus,
 .btn:active,
-input:focus {
+input:focus,
+textarea:focus {
   outline: none !important;
   box-shadow: none !important;
 }
@@ -43,7 +44,8 @@ input:focus {
   background-color: #e9ecef;
 }
 
-input:focus {
+input:focus,
+textarea:focus {
   border-color: #5033b6 !important;
 }
 
@@ -75,6 +77,10 @@ input:focus {
 .accordion-item:hover,
 .info-row:hover {
   background-color: #f0ecff;
+}
+
+.list-group-item.selected {
+  background-color: #dfd7fd;
 }
 
 .accordion-button:not(.collapsed) {
