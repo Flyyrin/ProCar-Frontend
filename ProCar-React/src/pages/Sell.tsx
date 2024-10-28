@@ -6,9 +6,11 @@ import axiosInstance from "../components/AxiosInstance";
 import { useState, useRef, useEffect } from "react";
 import "../styles/ImageBox.css";
 import VehicleItem from "../components/VehicleItemMin";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 function Sell() {
+  const navigate = useNavigate();
+
   const [apiError, setApiError] = useState(false);
   const [invalidFileSize, setInvalidFileSize] = useState(false);
   const [invalidFileType, setInvalidFileType] = useState(false);
@@ -402,13 +404,16 @@ function Sell() {
       formData.append("description", desValue);
       formData.append("mileage", milValue);
       formData.append("postal", locValue);
+      formData.append("city", postalCity);
 
       setLoading(true);
       axiosInstance
         .post("/PostListing", formData)
         .then(function (response) {
           if (response.status === 200) {
-            alert("success");
+            navigate(`/listing/${response.data.listingId}`, {
+              state: { listing_placed: true },
+            });
           }
         })
         .catch(function () {
