@@ -114,3 +114,8 @@
   display: block;
   z-index: 5;
 }
+
+.imageBox.disabled .uploadBoxPreviewPanelRight,
+.imageBox.disabled .uploadBoxPreviewPanelLeft {
+  display: none;
+}

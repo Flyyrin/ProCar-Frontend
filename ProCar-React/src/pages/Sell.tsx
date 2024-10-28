@@ -13,6 +13,7 @@ function Sell() {
   const [invalidFileSize, setInvalidFileSize] = useState(false);
   const [invalidFileType, setInvalidFileType] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [postalLoading, setPostalLoading] = useState(false);
 
   const image1InputRef = useRef<HTMLInputElement | null>(null);
   const image2InputRef = useRef<HTMLInputElement | null>(null);
@@ -28,7 +29,7 @@ function Sell() {
 
   const [titleValue, settitleValue] = useState("");
   const [titleInvalid, setTitleInvalid] = useState(false);
-  const maxNameLength = 45;
+  const maxTitleLength = 45;
 
   const [desValue, setDesValue] = useState("");
   const [desInvalid, setdesInvalid] = useState(false);
@@ -36,6 +37,8 @@ function Sell() {
 
   const [locValue, setLocValue] = useState("");
   const [locInvalid, setLocInvalid] = useState(false);
+  const [postalInvalid, setPostalInvalid] = useState(true);
+  const [postalCity, setPostalCity] = useState("-");
 
   const [milValue, setMilValue] = useState("");
   const [milInvalid, setMilInvalid] = useState(false);
@@ -239,12 +242,12 @@ function Sell() {
 
   const validateTitle = (val?: string) => {
     if (val) {
-      if (val.length > maxNameLength || val.length == 0) {
+      if (val.length > maxTitleLength || val.length == 0) {
         setTitleInvalid(true);
         return false;
       }
     } else {
-      if (titleValue.length > maxNameLength || titleValue.length == 0) {
+      if (titleValue.length > maxTitleLength || titleValue.length == 0) {
         setTitleInvalid(true);
         return false;
       }
@@ -270,33 +273,71 @@ function Sell() {
   };
 
   const validateLoc = (val?: string) => {
-    if (val) {
-      if (val.length == 0) {
-        setLocInvalid(true);
-        return false;
-      }
-    } else {
-      if (locValue.length == 0) {
-        setLocInvalid(true);
-        return false;
-      }
+    var loc = val ? val : locValue;
+
+    if (loc.length == 0 || postalInvalid) {
+      setLocInvalid(true);
+      return false;
     }
     setLocInvalid(false);
     return true;
   };
 
-  const validateMil = (val?: string) => {
-    if (val) {
-      if (val.length == 0 || !/^\d+$/.test(val)) {
-        setMilInvalid(true);
-        return false;
-      }
-    } else {
-      if (milValue.length == 0 || !/^\d+$/.test(milValue)) {
-        setMilInvalid(true);
-        return false;
-      }
+  const validSearchPostal = (val?: string) => {
+    const postalRegex = /^\d{4}[A-Za-z]{2}$/;
+    var postal = val ? val : locValue;
+    postal = postal.replace(/\s+/g, "");
+    if (postalRegex.test(postal)) {
+      setPostalLoading(true);
+      axiosInstance
+        .get(`/CheckPostal?postal=${postal}`)
+        .then(function (response) {
+          if (
+            response.data.response.docs[0] &&
+            response.data.response.docs[0].type == "postcode" &&
+            response.data.response.docs[0].woonplaatsnaam
+          ) {
+            const city = response.data.response.docs[0].woonplaatsnaam;
+            setPostalCity(city);
+            setPostalLoading(false);
+            setPostalInvalid(false);
+            setLocInvalid(false);
+            return true;
+          } else {
+            setPostalLoading(false);
+            setPostalInvalid(true);
+            return false;
+          }
+        })
+        .catch(function (error) {
+          if (error.response.status === 400) {
+            setPostalLoading(false);
+            setPostalInvalid(true);
+            return false;
+          } else {
+            setPostalLoading(false);
+            setApiError(true);
+            window.scrollTo(0, 0);
+          }
+        });
     }
+  };
+
+  const validateMil = (val?: string) => {
+    const milRegex = /^\d+$/;
+    const maxMil = 1000000;
+    var mil = val ? val : milValue;
+
+    if (mil.length == 0 || !milRegex.test(mil)) {
+      setMilInvalid(true);
+      return false;
+    }
+
+    if (parseInt(mil, 10) > maxMil) {
+      setMilInvalid(true);
+      return false;
+    }
+
     setMilInvalid(false);
     return true;
   };
@@ -327,14 +368,16 @@ function Sell() {
     const vehIdValid = validateVehId();
 
     if (
-      (image1Valid && image2Valid && image3Valid) ||
-      (image4Valid &&
-        image5Valid &&
-        titleValid &&
-        desValid &&
-        milValid &&
-        locValid &&
-        vehIdValid)
+      image1Valid &&
+      image2Valid &&
+      image3Valid &&
+      image4Valid &&
+      image5Valid &&
+      titleValid &&
+      desValid &&
+      milValid &&
+      locValid &&
+      vehIdValid
     ) {
       const formData = new FormData();
       formData.append("vehicleId", activeId);
@@ -358,11 +401,11 @@ function Sell() {
       formData.append("title", titleValue);
       formData.append("description", desValue);
       formData.append("mileage", milValue);
-      formData.append("location", locValue);
+      formData.append("postal", locValue);
 
       setLoading(true);
       axiosInstance
-        .post("/PlaceListing", formData)
+        .post("/PostListing", formData)
         .then(function (response) {
           if (response.status === 200) {
             alert("success");
@@ -404,20 +447,23 @@ function Sell() {
 
   const [activeId, setActiveId] = useState("");
   const handleListClick = (e: React.MouseEvent<HTMLUListElement>) => {
-    setVehIdInValid(false);
-    const target = e.target as HTMLElement;
-    const clickedLi = target.closest("li");
+    if (!loading) {
+      setVehIdInValid(false);
+      const target = e.target as HTMLElement;
+      const clickedLi = target.closest("li");
 
-    if (clickedLi) {
-      const itemId = clickedLi.getAttribute("data-id");
-      setActiveId(itemId || "");
+      if (clickedLi) {
+        const itemId = clickedLi.getAttribute("data-id");
+        setActiveId(itemId || "");
 
-      const listItems = (clickedLi.parentElement as HTMLUListElement).children;
-      for (let item of listItems) {
-        item.classList.remove("selected");
+        const listItems = (clickedLi.parentElement as HTMLUListElement)
+          .children;
+        for (let item of listItems) {
+          item.classList.remove("selected");
+        }
+
+        (clickedLi as HTMLLIElement).classList.add("selected");
       }
-
-      (clickedLi as HTMLLIElement).classList.add("selected");
     }
   };
 
@@ -445,6 +491,24 @@ function Sell() {
             <div className="card">
               <div className="card-body">
                 <form onSubmit={handleFormSubmit} noValidate>
+                  <div
+                    className={`invalid-feedback mb-3 ${
+                      (image1Invalid ||
+                        image2Invalid ||
+                        image3Invalid ||
+                        image4Invalid ||
+                        image5Invalid ||
+                        titleInvalid ||
+                        desInvalid ||
+                        milInvalid ||
+                        locInvalid ||
+                        vehIdInValid) &&
+                      "d-block"
+                    }`}
+                  >
+                    <i className="bi bi-exclamation-triangle"></i> Vul alle
+                    velden in.
+                  </div>
                   <h4 className="fw-bold mb-3">Voertuig</h4>
                   {loadingVeh ? (
                     <ul className="list-group">
@@ -518,7 +582,9 @@ function Sell() {
                           </div>
                         </>
                       )}
-                      <div className="imageBox mb-0">
+                      <div
+                        className={`imageBox mb-0 ${loading ? "disabled" : ""}`}
+                      >
                         <div className="mainContainer">
                           <div className="innerContainer">
                             <input
@@ -782,16 +848,16 @@ function Sell() {
                         <div
                           id="nameHelp"
                           className={`form-text ${
-                            maxNameLength - titleValue.length < 0 &&
+                            maxTitleLength - titleValue.length < 0 &&
                             "text-danger"
                           }`}
                         >
-                          {maxNameLength - titleValue.length < 0
+                          {maxTitleLength - titleValue.length < 0
                             ? `${-(
-                                maxNameLength - titleValue.length
+                                maxTitleLength - titleValue.length
                               )} tekens teveel`
                             : `${
-                                maxNameLength - titleValue.length
+                                maxTitleLength - titleValue.length
                               } tekens over.`}
                         </div>
                         <div
@@ -799,8 +865,10 @@ function Sell() {
                             titleInvalid && "d-block"
                           }`}
                         >
-                          <i className="bi bi-exclamation-triangle"></i> Titel
-                          mag niet leeg zijn.
+                          <i className="bi bi-exclamation-triangle"></i>
+                          {maxTitleLength - titleValue.length < 0
+                            ? "Titel mag niet te lang zijn."
+                            : "Titel mag niet leeg zijn."}
                         </div>
                       </div>
                       <div className="mb-3">
@@ -823,12 +891,27 @@ function Sell() {
                           }}
                         ></textarea>
                         <div
+                          id="nameHelp"
+                          className={`form-text ${
+                            maxTitleLength - titleValue.length < 0 &&
+                            "text-danger"
+                          }`}
+                        >
+                          {maxDesLength - desValue.length < 0
+                            ? `${-(
+                                maxDesLength - desValue.length
+                              )} tekens teveel`
+                            : `${maxDesLength - desValue.length} tekens over.`}
+                        </div>
+                        <div
                           className={`invalid-feedback ${
                             desInvalid && "d-block"
                           }`}
                         >
                           <i className="bi bi-exclamation-triangle"></i>{" "}
-                          Beschrijving mag niet leeg zijn.
+                          {maxDesLength - desValue.length < 0
+                            ? "Beschrijving mag niet te lang zijn."
+                            : "Beschrijving mag niet leeg zijn."}
                         </div>
                       </div>
                       <div className="mb-3 mt-3">
@@ -861,30 +944,55 @@ function Sell() {
                       </div>
                       <div className="mb-3 mt-3">
                         <label htmlFor="locInput" className="form-label">
-                          Locatie
+                          Postcode
                         </label>
-                        <input
-                          type="text"
-                          name="title"
-                          className={`form-control ${
-                            locInvalid ? "is-invalid" : ""
-                          }`}
-                          id="locInput"
-                          disabled={loading}
-                          onChange={async (
-                            event: React.ChangeEvent<HTMLInputElement>
-                          ) => {
-                            setLocValue(event.target.value);
-                            validateLoc(event.target.value);
-                          }}
-                        />
+
+                        <div className="position-relative">
+                          <input
+                            type="text"
+                            name="title"
+                            className={`form-control ${
+                              locInvalid ? "is-invalid" : ""
+                            }`}
+                            id="locInput"
+                            disabled={loading || postalLoading}
+                            onChange={async (
+                              event: React.ChangeEvent<HTMLInputElement>
+                            ) => {
+                              setLocValue(event.target.value);
+                              validateLoc(event.target.value);
+                              validSearchPostal(event.target.value);
+                            }}
+                          />
+                          {postalLoading && (
+                            <div className="position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center highlight">
+                              <div
+                                className="spinner-border spinner-border-sm position-absolute"
+                                role="status"
+                              />
+                            </div>
+                          )}
+                        </div>
                         <div
                           className={`invalid-feedback ${
                             locInvalid && "d-block"
                           }`}
                         >
-                          <i className="bi bi-exclamation-triangle"></i> Locatie
-                          mag niet leeg zijn.
+                          <i className="bi bi-exclamation-triangle"></i>{" "}
+                          Ongeldige postcode.
+                        </div>
+                        <div className={"valid-feedback d-block"}>
+                          <i
+                            className={`bi ${
+                              !postalInvalid ? "bi-check-circle-fill" : ""
+                            }`}
+                          ></i>{" "}
+                          <span className="text-muted mb-0 text-capitalize">
+                            Plaats
+                          </span>{" "}
+                          <span className="mb-0 text-capitalize fw-bold text-dark">
+                            {postalCity}
+                          </span>
                         </div>
                       </div>
                     </div>
