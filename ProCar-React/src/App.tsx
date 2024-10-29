@@ -19,6 +19,8 @@ import AddVehicle from "./pages/account/vehicles/AddVehicle";
 import Profile from "./pages/account/profile/Profile";
 import ChangeUsername from "./pages/account/profile/ChangeUsername";
 
+import Listing from "./pages/Listing";
+
 function App() {
   return (
     <Router>
@@ -40,6 +42,8 @@ function App() {
 
         <Route path="/account/my_profile" element={<Profile />} />
         <Route path="/account/change_username" element={<ChangeUsername />} />
+
+        <Route path="/listing/:listingId" element={<Listing />} />
 
         <Route path="*" element={<NotFound />} />
       </Routes>
