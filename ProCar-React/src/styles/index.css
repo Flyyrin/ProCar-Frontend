@@ -120,3 +120,7 @@ textarea:focus {
   cursor: auto;
   color: #8b76d6;
 }
+
+.list-group.is-invalid {
+  border-color: #dc3545 !important;
+}

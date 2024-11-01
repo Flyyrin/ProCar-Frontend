@@ -164,7 +164,10 @@ function Header() {
                     >
                       Mijn voertuigen
                     </NavLink>
-                    <NavLink className="dropdown-item mb-1" to="/account/ads">
+                    <NavLink
+                      className="dropdown-item mb-1"
+                      to="/account/my_listings"
+                    >
                       Mijn advertenties
                     </NavLink>
                     <NavLink

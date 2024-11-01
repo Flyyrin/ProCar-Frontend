@@ -8,6 +8,9 @@ import { NavLink, useParams, useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axiosInstance from "../components/AxiosInstance";
 
+const capitalizeFirstLetter = (str: string) =>
+  str.charAt(0).toUpperCase() + str.slice(1);
+
 function timeAgo(timestamp: string | number): string {
   const now = new Date();
   const differenceInSeconds = Math.floor(
@@ -53,15 +56,20 @@ function Listing() {
         if (response.status === 200) {
           if (response.data) {
             setListingData(response.data);
+            loadVehicleData();
           }
           setApiError(false);
           setLoading(false);
         }
       })
-      .catch(function () {
-        setApiError(true);
-        setLoading(false);
-        window.scrollTo(0, 0);
+      .catch(function (error) {
+        if (error.response.status === 400) {
+          setLoading(false);
+        } else {
+          setApiError(true);
+          setLoading(false);
+          window.scrollTo(0, 0);
+        }
       });
   }, []);
 
@@ -84,6 +92,27 @@ function Listing() {
   const [descriptionExtended, setDescriptionExtended] = useState(false);
   const handleDescriptionExtend = () => {
     setDescriptionExtended(!descriptionExtended);
+  };
+
+  const [loadingVehicle, setLoadingVehicle] = useState(true);
+  const [loadingBidding, setLoadingBidding] = useState(true);
+  const [vehicleData, setVehicleData] = useState<Record<string, any>>({});
+  const loadVehicleData = () => {
+    axiosInstance
+      .get(`/GetListingVehicleData?listingId=${listingId}`)
+      .then(function (response) {
+        if (response.status === 200) {
+          if (response.data) {
+            setVehicleData(response.data);
+            setLoadingVehicle(false);
+          }
+          setApiError(false);
+        }
+      })
+      .catch(function () {
+        setApiError(true);
+        window.scrollTo(0, 0);
+      });
   };
 
   return (
@@ -236,13 +265,106 @@ function Listing() {
                     <span className="visually-hidden">Next</span>
                   </button>
                 </div>
+                {loadingVehicle ? (
+                  <>
+                    <ul className="list-group mt-3 mb-0">
+                      <li className="list-group-item p-4 d-flex justify-content-center align-items-center highlight">
+                        <div className="spinner-border" role="status" />
+                      </li>
+                    </ul>
+                  </>
+                ) : (
+                  <>
+                    <div className="card mt-3">
+                      <div className="card-body px-2 px-sm-5">
+                        <div className="row mt-2 mb-1">
+                          {Object.keys(vehicleData.info).map((key) => (
+                            <div className="d-flex d-flex align-items-center">
+                              <div className="notification-image-container me-3 flex-shrink-0">
+                                <img
+                                  src={
+                                    "https://cdn.iconscout.com/icon/premium/png-256-thumb/emission-1897198-1606370.png?f=webp&w=256"
+                                  }
+                                  className="h-100"
+                                  alt="Image"
+                                ></img>
+                              </div>
+                              <div>
+                                <p className="text-muted mb-0">
+                                  {capitalizeFirstLetter(
+                                    key.replace(/_/g, " ")
+                                  )}
+                                </p>
+                                <p className="mb-0 fw-bold">
+                                  {capitalizeFirstLetter(vehicleData.info[key])}
+                                </p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                        {Object.keys(vehicleData.extraInfo).map((key) => (
+                          <div key={`id-${vehicleData.id}-${key}`}>
+                            <p className="mb-0 mt-3">
+                              <strong className="highlight">
+                                {capitalizeFirstLetter(key)}
+                              </strong>
+                            </p>
+                            {Object.keys(vehicleData.extraInfo[key]).map(
+                              (key2) => (
+                                <div
+                                  className="row info-row d-flex align-items-center my-1"
+                                  key={`idin-${vehicleData.id}-${key2}`}
+                                >
+                                  <div className="col-md-3 col-5">
+                                    <p className="text-muted mb-0">
+                                      {capitalizeFirstLetter(
+                                        key2.replace(/_/g, " ")
+                                      )}
+                                    </p>
+                                  </div>
+                                  <div className="col">
+                                    <p className="mb-0 fw-bold">
+                                      {capitalizeFirstLetter(
+                                        vehicleData.extraInfo[key][key2]
+                                      )}
+                                    </p>
+                                  </div>
+                                </div>
+                              )
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
               <div className="col col-12 col-xl-4">
                 <h4 className="fw-bold mb-0 mt-3 mt-xl-0">
                   {listingData?.title}
                 </h4>
-                <h5>{listingData?.price}</h5>
-                <NavLink className="link mb-0 highlight click" to="/user/4828">
+                <h5>
+                  {!listingData?.bidding ? "Bieden vanaf" : ""} €
+                  {listingData?.price},-
+                </h5>
+                <div className="d-flex text-muted fw-bold">
+                  <div className="d-flex align-items-center justify-content-center me-2">
+                    <i className="bi bi-eye-fill h6 mb-0"></i>
+                    <small className="align-middle ms-1">
+                      {listingData?.views}
+                    </small>
+                  </div>
+                  <div className="d-flex align-items-center justify-content-center">
+                    <i className="bi bi-star-fill h6 mb-0"></i>
+                    <small className="align-middle ms-1">
+                      {listingData?.stars}
+                    </small>
+                  </div>
+                </div>
+                <NavLink
+                  className="link mb-0 highlight click"
+                  to={`/user/${listingData?.userId}`}
+                >
                   <strong>{listingData?.userName}</strong>
                 </NavLink>
                 <p className="mb-0">
@@ -303,6 +425,23 @@ function Listing() {
                     {descriptionExtended ? "Zie minder" : "Zie meer"}
                   </span>
                 </div>
+                {!listingData?.bidding && (
+                  <>
+                    <div className="w-100 border border-2 mt-2 mb-3"></div>
+                    <h5>Bieden</h5>
+                    {loadingBidding ? (
+                      <>
+                        <ul className="list-group mt-3 mb-0">
+                          <li className="list-group-item p-4 d-flex justify-content-center align-items-center highlight">
+                            <div className="spinner-border" role="status" />
+                          </li>
+                        </ul>
+                      </>
+                    ) : (
+                      <></>
+                    )}
+                  </>
+                )}
               </div>
             </div>
           </>

@@ -45,6 +45,10 @@ function Sell() {
   const [milValue, setMilValue] = useState("");
   const [milInvalid, setMilInvalid] = useState(false);
 
+  const [bidding, setBidding] = useState(false);
+  const [priceValue, setPriceValue] = useState("");
+  const [priceInvalid, setPriceInvalid] = useState(false);
+
   const [vehIdInValid, setVehIdInValid] = useState(false);
 
   const handleUploadBoxClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -344,6 +348,19 @@ function Sell() {
     return true;
   };
 
+  const validatePrice = (val?: string) => {
+    const milRegex = /^\d+$/;
+    var mil = val ? val : milValue;
+
+    if (mil.length == 0 || !milRegex.test(mil) || mil.length > 10) {
+      setPriceInvalid(true);
+      return false;
+    }
+
+    setPriceInvalid(false);
+    return true;
+  };
+
   const validateVehId = () => {
     if (activeId == "") {
       setVehIdInValid(true);
@@ -368,6 +385,7 @@ function Sell() {
     const milValid = validateMil();
     const locValid = validateLoc();
     const vehIdValid = validateVehId();
+    const priceValid = validatePrice();
 
     if (
       image1Valid &&
@@ -379,7 +397,8 @@ function Sell() {
       desValid &&
       milValid &&
       locValid &&
-      vehIdValid
+      vehIdValid &&
+      priceValid
     ) {
       const formData = new FormData();
       formData.append("vehicleId", activeId);
@@ -402,6 +421,8 @@ function Sell() {
 
       formData.append("title", titleValue);
       formData.append("description", desValue);
+      formData.append("bidding", bidding.toString());
+      formData.append("price", priceValue);
       formData.append("mileage", milValue);
       formData.append("postal", locValue);
       formData.append("city", postalCity);
@@ -472,6 +493,36 @@ function Sell() {
     }
   };
 
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    event.dataTransfer.dropEffect = "copy";
+  };
+
+  const handleUploadBoxDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    setImage1Invalid(false);
+    setImage2Invalid(false);
+    setImage3Invalid(false);
+    setImage4Invalid(false);
+    setImage5Invalid(false);
+    setInvalidFileType(false);
+    setInvalidFileType(false);
+
+    const files = Array.from(e.dataTransfer.files);
+
+    const target = e.target as HTMLElement;
+    const nearestInput = target
+      .closest(".innerContainer")
+      ?.querySelector('input[type="file"]');
+
+    if (nearestInput) {
+      (nearestInput as HTMLInputElement).click();
+    }
+  };
+
   return (
     <>
       <Helmet>
@@ -507,7 +558,8 @@ function Sell() {
                         desInvalid ||
                         milInvalid ||
                         locInvalid ||
-                        vehIdInValid) &&
+                        vehIdInValid ||
+                        priceInvalid) &&
                       "d-block"
                     }`}
                   >
@@ -522,7 +574,12 @@ function Sell() {
                       </li>
                     </ul>
                   ) : vehicleData.length > 0 ? (
-                    <ul className="list-group" onClick={handleListClick}>
+                    <ul
+                      className={`list-group border ${
+                        vehIdInValid ? "is-invalid" : ""
+                      }`}
+                      onClick={handleListClick}
+                    >
                       {vehicleData.map((vehicle) => (
                         <VehicleItem vehicleData={vehicle} key={vehicle.id} />
                       ))}
@@ -608,6 +665,8 @@ function Sell() {
                               <div
                                 className="uploadBoxHitbox"
                                 onClick={handleUploadBoxClick}
+                                onDrop={handleUploadBoxDrop}
+                                onDragOver={handleDragOver}
                               ></div>
                               <div className="uploadBoxPreviewContainer">
                                 <div
@@ -653,6 +712,8 @@ function Sell() {
                                   <div
                                     className="uploadBoxHitbox"
                                     onClick={handleUploadBoxClick}
+                                    onDrop={handleUploadBoxDrop}
+                                    onDragOver={handleDragOver}
                                   ></div>
                                   <div className="uploadBoxPreviewContainer">
                                     <div
@@ -696,6 +757,8 @@ function Sell() {
                                   <div
                                     className="uploadBoxHitbox"
                                     onClick={handleUploadBoxClick}
+                                    onDrop={handleUploadBoxDrop}
+                                    onDragOver={handleDragOver}
                                   ></div>
                                   <div className="uploadBoxPreviewContainer">
                                     <div
@@ -741,6 +804,8 @@ function Sell() {
                                   <div
                                     className="uploadBoxHitbox"
                                     onClick={handleUploadBoxClick}
+                                    onDrop={handleUploadBoxDrop}
+                                    onDragOver={handleDragOver}
                                   ></div>
                                   <div className="uploadBoxPreviewContainer">
                                     <div
@@ -784,6 +849,8 @@ function Sell() {
                                   <div
                                     className="uploadBoxHitbox"
                                     onClick={handleUploadBoxClick}
+                                    onDrop={handleUploadBoxDrop}
+                                    onDragOver={handleDragOver}
                                   ></div>
                                   <div className="uploadBoxPreviewContainer">
                                     <div
@@ -944,7 +1011,7 @@ function Sell() {
                           }`}
                         >
                           <i className="bi bi-exclamation-triangle"></i>{" "}
-                          Ongeldige kilometerstand (vb. 15000).
+                          Ongeldige kilometerstand (vb. 15000km).
                         </div>
                       </div>
                       <div className="mb-3 mt-3">
@@ -1003,6 +1070,40 @@ function Sell() {
                     </div>
                   </div>
                   <div className="w-100 border border-2 mt-2 mb-3"></div>
+                  <h4 className="fw-bold mb-0">Prijs</h4>
+                  <div className="row">
+                    <div className="col col-md-6">
+                      <div className="mb-3 mt-3">
+                        <label htmlFor="milInput" className="form-label">
+                          Vraagprijs
+                        </label>
+                        <input
+                          type="text"
+                          name="title"
+                          className={`form-control ${
+                            priceInvalid ? "is-invalid" : ""
+                          }`}
+                          id="milInput"
+                          disabled={loading}
+                          onChange={async (
+                            event: React.ChangeEvent<HTMLInputElement>
+                          ) => {
+                            setPriceValue(event.target.value);
+                            validatePrice(event.target.value);
+                          }}
+                        />
+                        <div
+                          className={`invalid-feedback ${
+                            priceInvalid && "d-block"
+                          }`}
+                        >
+                          <i className="bi bi-exclamation-triangle"></i>{" "}
+                          Ongeldige vraagprijs (vb. €4500,-).
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="w-100 border border-2 mt-4 mb-3"></div>
                   <div className="row d-flex justify-content-center">
                     <div className="col col-md-6">
                       <div className="position-relative text-center">

@@ -12,6 +12,7 @@ import ConfirmEmail from "./pages/auth/ConfirmEmail";
 
 import Messages from "./pages/account/Messages";
 import Notifications from "./pages/account/Notifications";
+import Listings from "./pages/account/Listings";
 
 import Vehicles from "./pages/account/vehicles/Vehicles";
 import AddVehicle from "./pages/account/vehicles/AddVehicle";
@@ -36,6 +37,7 @@ function App() {
 
         <Route path="/messages" element={<Messages />} />
         <Route path="/notifications" element={<Notifications />} />
+        <Route path="/account/my_listings" element={<Listings />} />
 
         <Route path="/account/my_vehicles" element={<Vehicles />} />
         <Route path="/account/add_vehicle" element={<AddVehicle />} />
