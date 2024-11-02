@@ -1,6 +1,5 @@
 import Helmet from "react-helmet";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../components/AxiosInstance";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
@@ -8,7 +7,6 @@ import Alert from "../../components/Alert";
 import ListingPreview from "../../components/ListingPreview";
 
 function Listings() {
-  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [listingData, setListingData] = useState<any[]>([]);
   const [apiError, setApiError] = useState(false);
@@ -70,15 +68,6 @@ function Listings() {
                     key={listing.listingId}
                   />
                 ))}
-                <ListingPreview
-                  listingData={{
-                    listingId: "test",
-                    previewImagePath: "/uploads/",
-                    title: "Nissan Kia 65pk",
-                    bidding: false,
-                    price: 15000,
-                  }}
-                />
               </ul>
             ) : (
               <ul className="list-group">

@@ -124,3 +124,11 @@ textarea:focus {
 .list-group.is-invalid {
   border-color: #dc3545 !important;
 }
+
+.listingPreview-image-container {
+  width: 115px;
+  height: 75px;
+  overflow: hidden;
+  justify-content: center;
+  display: flex;
+}

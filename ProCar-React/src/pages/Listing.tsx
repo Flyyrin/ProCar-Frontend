@@ -57,6 +57,13 @@ function Listing() {
           if (response.data) {
             setListingData(response.data);
             loadVehicleData();
+            if (response.data.starred == true) {
+              setStarConfirm(true);
+              setListingData((prevData) => ({
+                ...prevData,
+                stars: response.data.stars - 1,
+              }));
+            }
           }
           setApiError(false);
           setLoading(false);
@@ -65,6 +72,8 @@ function Listing() {
       .catch(function (error) {
         if (error.response.status === 400) {
           setLoading(false);
+          setApiError(false);
+          setListingData({});
         } else {
           setApiError(true);
           setLoading(false);
@@ -87,6 +96,12 @@ function Listing() {
   const [starConfirm, setStarConfirm] = useState(false);
   const handleStar = () => {
     setStarConfirm(!starConfirm);
+    axiosInstance
+      .post("/UserStarListing", {
+        listingId: listingId?.toString(),
+        star: !starConfirm,
+      })
+      .catch(function () {});
   };
 
   const [descriptionExtended, setDescriptionExtended] = useState(false);
@@ -278,29 +293,98 @@ function Listing() {
                     <div className="card mt-3">
                       <div className="card-body px-2 px-sm-5">
                         <div className="row mt-2 mb-1">
-                          {Object.keys(vehicleData.info).map((key) => (
-                            <div className="d-flex d-flex align-items-center">
-                              <div className="notification-image-container me-3 flex-shrink-0">
-                                <img
-                                  src={
-                                    "https://cdn.iconscout.com/icon/premium/png-256-thumb/emission-1897198-1606370.png?f=webp&w=256"
-                                  }
-                                  className="h-100"
-                                  alt="Image"
-                                ></img>
+                          <div className="col col-md-8">
+                            <div className="row">
+                              <div className="col d-flex d-flex align-items-center my-3">
+                                <div className="notification-image-container me-3 flex-shrink-0">
+                                  <img
+                                    src={"/icons/vehicle/calender.png"}
+                                    className="h-100"
+                                    alt="Image"
+                                  ></img>
+                                </div>
+                                <div>
+                                  <p className="text-muted mb-0">Bouwjaar</p>
+                                  <p className="mb-0 fw-bold">
+                                    {capitalizeFirstLetter(
+                                      vehicleData.info.bouwjaar
+                                    )}
+                                  </p>
+                                </div>
                               </div>
-                              <div>
-                                <p className="text-muted mb-0">
-                                  {capitalizeFirstLetter(
-                                    key.replace(/_/g, " ")
-                                  )}
-                                </p>
-                                <p className="mb-0 fw-bold">
-                                  {capitalizeFirstLetter(vehicleData.info[key])}
-                                </p>
+                              <div className="col d-flex d-flex align-items-center my-3">
+                                <div className="notification-image-container me-3 flex-shrink-0">
+                                  <img
+                                    src={"/icons/vehicle/gas-pump.png"}
+                                    className="h-100"
+                                    alt="Image"
+                                  ></img>
+                                </div>
+                                <div>
+                                  <p className="text-muted mb-0">Brandstof</p>
+                                  <p className="mb-0 fw-bold">
+                                    {capitalizeFirstLetter(
+                                      vehicleData.info.brandstof
+                                    )}
+                                  </p>
+                                </div>
                               </div>
+                              <div className="col d-flex d-flex align-items-center my-3">
+                                <div className="notification-image-container me-3 flex-shrink-0">
+                                  <img
+                                    src={"/icons/vehicle/motor.svg"}
+                                    className="h-100"
+                                    alt="Image"
+                                  ></img>
+                                </div>
+                                <div>
+                                  <p className="text-muted mb-0">Motorinhoud</p>
+                                  <p className="mb-0 fw-bold">
+                                    {capitalizeFirstLetter(
+                                      vehicleData.info.motorinhoud
+                                    )}
+                                  </p>
+                                </div>
+                              </div>
+                              <div className="col d-flex d-flex align-items-center my-3">
+                                <div className="notification-image-container me-3 flex-shrink-0">
+                                  <img
+                                    src={"/icons/vehicle/horsepower.png"}
+                                    className="h-100"
+                                    alt="Image"
+                                  ></img>
+                                </div>
+                                <div>
+                                  <p className="text-muted mb-0">Vermogen</p>
+                                  <p className="mb-0 fw-bold">
+                                    {capitalizeFirstLetter(
+                                      vehicleData.info.vermogen
+                                    )}
+                                  </p>
+                                </div>
+                              </div>
+                              <div className="col d-flex d-flex align-items-center my-3">
+                                <div className="notification-image-container me-3 flex-shrink-0">
+                                  <img
+                                    src={"/icons/vehicle/co2-cloud.svg"}
+                                    className="h-100"
+                                    alt="Image"
+                                  ></img>
+                                </div>
+                                <div>
+                                  <p className="text-muted mb-0">
+                                    Emissieklasse
+                                  </p>
+                                  <p className="mb-0 fw-bold">
+                                    {capitalizeFirstLetter(
+                                      vehicleData.info.emissieklasse
+                                    )}
+                                  </p>
+                                </div>
+                              </div>
+                              <div className="col d-flex d-flex align-items-center my-3"></div>
                             </div>
-                          ))}
+                          </div>
                         </div>
                         {Object.keys(vehicleData.extraInfo).map((key) => (
                           <div key={`id-${vehicleData.id}-${key}`}>
@@ -357,7 +441,9 @@ function Listing() {
                   <div className="d-flex align-items-center justify-content-center">
                     <i className="bi bi-star-fill h6 mb-0"></i>
                     <small className="align-middle ms-1">
-                      {listingData?.stars}
+                      {starConfirm
+                        ? listingData?.stars + 1
+                        : listingData?.stars}
                     </small>
                   </div>
                 </div>
