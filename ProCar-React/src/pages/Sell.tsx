@@ -1074,6 +1074,32 @@ function Sell() {
                   <div className="row">
                     <div className="col col-md-6">
                       <div className="mb-3 mt-3">
+                        <div className="d-flex mb-1">
+                          <p className="mb-0 h5">
+                            <span
+                              className={`badge click ${
+                                bidding ? "" : "active"
+                              }`}
+                              onClick={async () => {
+                                setBidding(false);
+                              }}
+                            >
+                              Vaste prijs
+                            </span>
+                          </p>
+                          <p className="mb-0 h5 ms-2">
+                            <span
+                              className={`badge click ${
+                                bidding ? "active" : ""
+                              }`}
+                              onClick={async () => {
+                                setBidding(true);
+                              }}
+                            >
+                              Bieden
+                            </span>
+                          </p>
+                        </div>
                         <label htmlFor="milInput" className="form-label">
                           Vraagprijs
                         </label>

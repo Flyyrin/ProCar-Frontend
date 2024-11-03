@@ -6,7 +6,7 @@ import Footer from "../../components/Footer";
 import Alert from "../../components/Alert";
 import ListingPreview from "../../components/ListingPreview";
 
-function Listings() {
+function Favorites() {
   const [loading, setLoading] = useState(true);
   const [listingData, setListingData] = useState<any[]>([]);
   const [apiError, setApiError] = useState(false);
@@ -18,7 +18,7 @@ function Listings() {
   function loadNotifications() {
     setLoading(true);
     axiosInstance
-      .get(`/GetUserListings`)
+      .get(`/GetUserStarredListings`)
       .then(function (response) {
         if (response.status === 200) {
           setListingData(response.data);
@@ -36,13 +36,13 @@ function Listings() {
   return (
     <>
       <Helmet>
-        <title>Mijn Advertenties - ProCar</title>
+        <title>Favoriete Advertenties - ProCar</title>
         <meta name="authorize"></meta>
       </Helmet>
       <Header />
       <div className="container mt-4">
         <h3 className="fw-bold my-4 text-md-center ps-2 ps-md-0">
-          Mijn advertenties
+          Mijn favoriete advertenties
         </h3>
         <div className="row d-flex justify-content-center">
           <div className="col-lg-9">
@@ -65,7 +65,7 @@ function Listings() {
                 {listingData.map((listing) => (
                   <ListingPreview
                     listingData={listing}
-                    edit={true}
+                    edit={false}
                     key={listing.listingId}
                   />
                 ))}
@@ -74,7 +74,7 @@ function Listings() {
               <ul className="list-group">
                 <li className="list-group-item p-4">
                   <p className="text-center m-0">
-                    Je hebt geen actieve advertenties
+                    Je hebt nog geen favoriete advertenties
                   </p>
                 </li>
               </ul>
@@ -87,4 +87,4 @@ function Listings() {
   );
 }
 
-export default Listings;
+export default Favorites;

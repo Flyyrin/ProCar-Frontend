@@ -172,7 +172,13 @@ function Header() {
                     </NavLink>
                     <NavLink
                       className="dropdown-item mb-1"
-                      to="/account/favorites"
+                      to="/account/viewed_listings"
+                    >
+                      Recent bekeken
+                    </NavLink>
+                    <NavLink
+                      className="dropdown-item mb-1"
+                      to="/account/my_favorites"
                     >
                       Mijn favorieten
                     </NavLink>

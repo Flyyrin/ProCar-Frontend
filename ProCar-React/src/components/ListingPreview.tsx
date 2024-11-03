@@ -20,7 +20,13 @@ function formatDate(dateString: string) {
   return formatter.format(date);
 }
 
-function ListingPreview({ listingData }: { listingData: any }) {
+function ListingPreview({
+  listingData,
+  edit = true,
+}: {
+  listingData: any;
+  edit: boolean;
+}) {
   const navigate = useNavigate();
 
   const handleEditListing = () => {
@@ -45,7 +51,7 @@ function ListingPreview({ listingData }: { listingData: any }) {
           </p>
           <p className="mb-0 fw-bold">{listingData.title}</p>
           <p className="mb-0">
-            {!listingData.bidding ? "Bieden vanaf" : ""} €{listingData.price}
+            {listingData.bidding ? "Bieden vanaf" : ""} €{listingData.price}
             ,-
           </p>
           <div className="d-flex text-muted fw-bold">
@@ -65,24 +71,26 @@ function ListingPreview({ listingData }: { listingData: any }) {
             <strong className="">Bekijk advertentie</strong>
           </NavLink>
         </div>
-        <div className="ms-auto d-flex align-items-center">
-          <i
-            className="bi bi-three-dots-vertical h5 ms-2 click"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-          ></i>
-          <ul className="dropdown-menu dropdown-menu-end">
-            <li>
-              <button
-                className="dropdown-item"
-                type="button"
-                onClick={handleEditListing}
-              >
-                Advertentie bewerken
-              </button>
-            </li>
-          </ul>
-        </div>
+        {edit && (
+          <div className="ms-auto d-flex align-items-center">
+            <i
+              className="bi bi-three-dots-vertical h5 ms-2 click"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            ></i>
+            <ul className="dropdown-menu dropdown-menu-end">
+              <li>
+                <button
+                  className="dropdown-item"
+                  type="button"
+                  onClick={handleEditListing}
+                >
+                  Advertentie bewerken
+                </button>
+              </li>
+            </ul>
+          </div>
+        )}
       </div>
     </li>
   );

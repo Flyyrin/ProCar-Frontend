@@ -428,7 +428,7 @@ function Listing() {
                   {listingData?.title}
                 </h4>
                 <h5>
-                  {!listingData?.bidding ? "Bieden vanaf" : ""} €
+                  {listingData?.bidding ? "Bieden vanaf" : ""} €
                   {listingData?.price},-
                 </h5>
                 <div className="d-flex text-muted fw-bold">
@@ -511,7 +511,7 @@ function Listing() {
                     {descriptionExtended ? "Zie minder" : "Zie meer"}
                   </span>
                 </div>
-                {!listingData?.bidding && (
+                {listingData?.bidding && (
                   <>
                     <div className="w-100 border border-2 mt-2 mb-3"></div>
                     <h5>Bieden</h5>
