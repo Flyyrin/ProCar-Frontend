@@ -123,10 +123,10 @@ function Profile() {
               <div className="card">
                 <div className="card-body">
                   <div className="row info-row d-flex align-items-center my-2">
-                    <div className="col-4 col-md-4 col-xl-3 col-xxl-2">
+                    <div className="col col-12 col-md-4 col-xl-3 col-xxl-2">
                       <p className="text-muted mb-0">Gebruikersnaam</p>
                     </div>
-                    <div className="col">
+                    <div className="col col-12 col-md-8 col-xl-9 col-xxl-10">
                       <p className="mb-0 fw-bold d-flex">
                         {userData?.username}
                         <NavLink
@@ -139,10 +139,10 @@ function Profile() {
                     </div>
                   </div>
                   <div className="row info-row d-flex align-items-center my-2">
-                    <div className="col-4 col-md-4 col-xl-3 col-xxl-2">
+                    <div className="col col-12 col-md-4 col-xl-3 col-xxl-2">
                       <p className="text-muted mb-0">E-mailadres</p>
                     </div>
-                    <div className="col">
+                    <div className="col col-12 col-md-8 col-xl-9 col-xxl-10">
                       <div className="mb-0 fw-bold d-flex">
                         {userData?.email}
                         <p className="mb-0 btn-outline border-0 ms-auto">
@@ -152,10 +152,10 @@ function Profile() {
                     </div>
                   </div>
                   <div className="row info-row d-flex align-items-center my-2">
-                    <div className="col-4 col-md-4 col-xl-3 col-xxl-2">
+                    <div className="col col-12 col-md-4 col-xl-3 col-xxl-2">
                       <p className="text-muted mb-0">Wachtwoord</p>
                     </div>
-                    <div className="col">
+                    <div className="col col-12 col-md-8 col-xl-9 col-xxl-10">
                       <div className="mb-0 fw-bold d-flex">
                         {Array.from({ length: 7 }, (_, i) => (
                           <span key={i}>•</span>
@@ -188,10 +188,10 @@ function Profile() {
                     </div>
                   </div>
                   <div className="row info-row d-flex align-items-center my-2">
-                    <div className="col-4 col-md-4 col-xl-3 col-xxl-2">
+                    <div className="col col-12 col-md-4 col-xl-3 col-xxl-2">
                       <p className="text-muted mb-0">Actief sinds</p>
                     </div>
-                    <div className="col">
+                    <div className="col col-12 col-md-8 col-xl-9 col-xxl-10">
                       <p className="mb-0 fw-bold d-flex">
                         {userData?.active_since}
                       </p>

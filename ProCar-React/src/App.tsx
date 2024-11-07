@@ -23,6 +23,7 @@ import Profile from "./pages/account/profile/Profile";
 import ChangeUsername from "./pages/account/profile/ChangeUsername";
 
 import Listing from "./pages/Listing";
+import User from "./pages/User";
 
 function App() {
   return (
@@ -50,6 +51,7 @@ function App() {
         <Route path="/account/change_username" element={<ChangeUsername />} />
 
         <Route path="/listing/:listingId" element={<Listing />} />
+        <Route path="/user/:userId" element={<User />} />
 
         <Route path="*" element={<NotFound />} />
       </Routes>

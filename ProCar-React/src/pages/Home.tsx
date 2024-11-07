@@ -8,12 +8,12 @@ import { useState, useEffect } from "react";
 
 function Home() {
   const navigate = useNavigate();
-  useEffect(() => {
-    navigate("/listing/1e3b234c-b006-409a-b9fa-da4397774693", {
-      replace: true,
-      state: { listing_placed: true },
-    });
-  });
+  // useEffect(() => {
+  //   navigate("/listing/1e3b234c-b006-409a-b9fa-da4397774693", {
+  //     replace: true,
+  //     state: { listing_placed: true },
+  //   });
+  // });
 
   return (
     <>
