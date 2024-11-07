@@ -1,13 +1,15 @@
 import Helmet from "react-helmet";
 import axiosInstance from "../components/AxiosInstance";
-import { NavLink, useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import searchImage from "../assets/search.png";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Alert from "../components/Alert";
+import ListingPreview from "../components/ListingPreview";
 
 function User() {
+  const navigate = useNavigate();
   const { userId } = useParams();
 
   const [loading, setLoading] = useState(true);
@@ -53,7 +55,7 @@ function User() {
       {apiError ? (
         <></>
       ) : loading ? (
-        <ul className="list-group">
+        <ul className="list-group mt-5">
           <li className="list-group-item p-4 d-flex justify-content-center align-items-center highlight">
             <div className="spinner-border" role="status" />
           </li>
@@ -113,6 +115,26 @@ function User() {
                   </div>
                 </div>
               </div>
+              <h4 className="fw-bold my-4 ps-2 mb-2">Advertenties</h4>
+              {userData?.listings.length > 0 ? (
+                <ul className="list-group">
+                  {userData?.listings.map((listing: Record<string, any>) => (
+                    <ListingPreview
+                      listingData={listing}
+                      edit={false}
+                      key={listing.listingId}
+                    />
+                  ))}
+                </ul>
+              ) : (
+                <ul className="list-group">
+                  <li className="list-group-item p-4">
+                    <p className="text-center m-0">
+                      Gebruiker heeft geen actieve advertenties
+                    </p>
+                  </li>
+                </ul>
+              )}
             </div>
           </div>
         </div>

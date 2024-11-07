@@ -350,7 +350,7 @@ function Sell() {
 
   const validatePrice = (val?: string) => {
     const milRegex = /^\d+$/;
-    var mil = val ? val : milValue;
+    var mil = val ? val : priceValue;
 
     if (mil.length == 0 || !milRegex.test(mil) || mil.length > 10) {
       setPriceInvalid(true);

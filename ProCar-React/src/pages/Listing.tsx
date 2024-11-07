@@ -41,6 +41,9 @@ function Listing() {
   const location = useLocation();
   const [listingPlaced] = useState(location.state?.listing_placed);
 
+  const [priceValue, setPriceValue] = useState("");
+  const [priceInvalid, setPriceInvalid] = useState(false);
+
   const navigate = useNavigate();
   useEffect(() => {
     navigate(location.search, { replace: true, state: {} });
@@ -128,6 +131,32 @@ function Listing() {
         setApiError(true);
         window.scrollTo(0, 0);
       });
+  };
+
+  const validatePrice = (val?: string) => {
+    const milRegex = /^\d+$/;
+    var mil = val ? val : priceValue;
+
+    if (
+      mil.length == 0 ||
+      !milRegex.test(mil) ||
+      mil.length > 10 ||
+      mil < listingData?.price
+    ) {
+      setPriceInvalid(true);
+      return false;
+    }
+
+    setPriceInvalid(false);
+    return true;
+  };
+
+  const handlePlaceBid = () => {
+    var priceValid = validatePrice();
+
+    if (priceValid) {
+      alert("oke");
+    }
   };
 
   return (
@@ -449,7 +478,11 @@ function Listing() {
                 </div>
                 <NavLink
                   className="link mb-0 highlight click"
-                  to={`/user/${listingData?.userId}`}
+                  to={
+                    listingData?.userId == "me"
+                      ? "#"
+                      : `/user/${listingData?.userId}`
+                  }
                 >
                   <strong>{listingData?.userName}</strong>
                 </NavLink>
@@ -515,7 +548,7 @@ function Listing() {
                   <>
                     <div className="w-100 border border-2 mt-2 mb-3"></div>
                     <h5>Bieden</h5>
-                    {loadingBidding ? (
+                    {!loadingBidding ? (
                       <>
                         <ul className="list-group mt-3 mb-0">
                           <li className="list-group-item p-4 d-flex justify-content-center align-items-center highlight">
@@ -524,7 +557,84 @@ function Listing() {
                         </ul>
                       </>
                     ) : (
-                      <></>
+                      <>
+                        <div className="card">
+                          <div className="card-body">
+                            <div className="mb-2">
+                              <label
+                                htmlFor="priceInput"
+                                className="form-label"
+                              >
+                                Bedrag
+                              </label>
+                              <input
+                                type="text"
+                                name="bidPrice"
+                                id="priceInput"
+                                className={`form-control ${
+                                  priceInvalid ? "is-invalid" : ""
+                                }`}
+                                disabled={loading}
+                                onChange={async (
+                                  event: React.ChangeEvent<HTMLInputElement>
+                                ) => {
+                                  setPriceValue(event.target.value);
+                                  validatePrice(event.target.value);
+                                }}
+                              />
+                              <div
+                                className={`invalid-feedback ${
+                                  priceInvalid && "d-block"
+                                }`}
+                              >
+                                <i className="bi bi-exclamation-triangle"></i>{" "}
+                                Ongeldige prijs (minimaal €{listingData?.price}
+                                ,- ).
+                              </div>
+                            </div>
+                            <div
+                              className="d-flex align-items-center justify-content-center btn w-100"
+                              onClick={handlePlaceBid}
+                            >
+                              <i className={`bi bi-hammer h5 mb-0`}></i>
+                              <span className="align-middle ms-2">
+                                Plaats bod
+                              </span>
+                            </div>
+                            <hr />
+                            <div className="row info-row d-flex align-items-center my-2">
+                              <div className="col">
+                                <p className="text-muted mb-0">Rafael Lemmen</p>
+                              </div>
+                              <div className="col">
+                                <p className="mb-0 fw-bold d-flex justify-content-center">
+                                  €1500,-
+                                </p>
+                              </div>
+                              <div className="col">
+                                <p className="text-muted mb-0 fs-6">
+                                  <small>4 dagen geleden</small>
+                                </p>
+                              </div>
+                            </div>
+                            <div className="row info-row d-flex align-items-center my-2">
+                              <div className="col">
+                                <p className="text-muted mb-0">Rens Crijns</p>
+                              </div>
+                              <div className="col">
+                                <p className="mb-0 fw-bold d-flex justify-content-center">
+                                  €1500,-
+                                </p>
+                              </div>
+                              <div className="col">
+                                <p className="text-muted mb-0 fs-6">
+                                  <small>4 dagen geleden</small>
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </>
                     )}
                   </>
                 )}
