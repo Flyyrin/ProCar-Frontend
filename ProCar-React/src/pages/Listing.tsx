@@ -303,8 +303,8 @@ function Listing() {
                       <div className="card-body px-2 px-sm-5">
                         <div className="row mt-2 mb-1">
                           <div className="col col-md-8">
-                            <div className="row">
-                              <div className="col d-flex d-flex align-items-center my-3">
+                            <div className="row ms-4 ms-sm-0">
+                              <div className="col col-12 col-sm-6 col-xxl-4 d-flex d-flex align-items-center my-3">
                                 <div className="notification-image-container me-3 flex-shrink-0">
                                   <img
                                     src={"/icons/vehicle/calender.png"}
@@ -321,7 +321,7 @@ function Listing() {
                                   </p>
                                 </div>
                               </div>
-                              <div className="col d-flex d-flex align-items-center my-3">
+                              <div className="col col-12 col-sm-6 col-xxl-4 d-flex d-flex align-items-center my-3">
                                 <div className="notification-image-container me-3 flex-shrink-0">
                                   <img
                                     src={"/icons/vehicle/counter.png"}
@@ -336,7 +336,7 @@ function Listing() {
                                   </p>
                                 </div>
                               </div>
-                              <div className="col d-flex d-flex align-items-center my-3">
+                              <div className="col col-12 col-sm-6 col-xxl-4 d-flex d-flex align-items-center my-3">
                                 <div className="notification-image-container me-3 flex-shrink-0">
                                   <img
                                     src={"/icons/vehicle/gas-pump.png"}
@@ -353,7 +353,7 @@ function Listing() {
                                   </p>
                                 </div>
                               </div>
-                              <div className="col d-flex d-flex align-items-center my-3">
+                              <div className="col col-12 col-sm-6 col-xxl-4 d-flex d-flex align-items-center my-3">
                                 <div className="notification-image-container me-3 flex-shrink-0">
                                   <img
                                     src={"/icons/vehicle/motor.svg"}
@@ -370,7 +370,7 @@ function Listing() {
                                   </p>
                                 </div>
                               </div>
-                              <div className="col d-flex d-flex align-items-center my-3">
+                              <div className="col col-12 col-sm-6 col-xxl-4 d-flex d-flex align-items-center my-3">
                                 <div className="notification-image-container me-3 flex-shrink-0">
                                   <img
                                     src={"/icons/vehicle/horsepower.png"}
@@ -387,7 +387,7 @@ function Listing() {
                                   </p>
                                 </div>
                               </div>
-                              <div className="col d-flex d-flex align-items-center my-3">
+                              <div className="col col-12 col-sm-6 col-xxl-4 d-flex d-flex align-items-center my-3">
                                 <div className="notification-image-container me-3 flex-shrink-0">
                                   <img
                                     src={"/icons/vehicle/co2-cloud.svg"}
