@@ -1,12 +1,21 @@
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Alert from "../components/Alert";
+import Bidding from "../components/Bidding";
 import Helmet from "react-helmet";
 import searchImage from "../assets/search.png";
 import "../styles/Carousel.css";
 import { NavLink, useParams, useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axiosInstance from "../components/AxiosInstance";
+
+function formatTextWithLineBreaks(text: string) {
+  return text.split(/[\r\n]+/).map((line, index) => (
+    <p key={index} className="mb-2">
+      {line}
+    </p>
+  ));
+}
 
 const capitalizeFirstLetter = (str: string) =>
   str.charAt(0).toUpperCase() + str.slice(1);
@@ -25,7 +34,7 @@ function timeAgo(timestamp: string | number): string {
     return "Nu";
   } else if (differenceInSeconds < secondsInHour) {
     const minutes = Math.floor(differenceInSeconds / secondsInMinute);
-    return `${minutes} minuut${minutes === 1 ? "" : "en"} geleden`;
+    return `${minutes} ${minutes === 1 ? "minuut" : "minuten"} geleden`;
   } else if (differenceInSeconds < secondsInDay) {
     const hours = Math.floor(differenceInSeconds / secondsInHour);
     return `${hours} uur geleden`;
@@ -40,9 +49,6 @@ function Listing() {
 
   const location = useLocation();
   const [listingPlaced] = useState(location.state?.listing_placed);
-
-  const [priceValue, setPriceValue] = useState("");
-  const [priceInvalid, setPriceInvalid] = useState(false);
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -131,32 +137,6 @@ function Listing() {
         setApiError(true);
         window.scrollTo(0, 0);
       });
-  };
-
-  const validatePrice = (val?: string) => {
-    const milRegex = /^\d+$/;
-    var mil = val ? val : priceValue;
-
-    if (
-      mil.length == 0 ||
-      !milRegex.test(mil) ||
-      mil.length > 10 ||
-      mil < listingData?.price
-    ) {
-      setPriceInvalid(true);
-      return false;
-    }
-
-    setPriceInvalid(false);
-    return true;
-  };
-
-  const handlePlaceBid = () => {
-    var priceValid = validatePrice();
-
-    if (priceValid) {
-      alert("oke");
-    }
   };
 
   return (
@@ -344,6 +324,21 @@ function Listing() {
                               <div className="col d-flex d-flex align-items-center my-3">
                                 <div className="notification-image-container me-3 flex-shrink-0">
                                   <img
+                                    src={"/icons/vehicle/counter.png"}
+                                    className="h-100"
+                                    alt="Image"
+                                  ></img>
+                                </div>
+                                <div>
+                                  <p className="text-muted mb-0">KM stand</p>
+                                  <p className="mb-0 fw-bold">
+                                    {listingData?.mileage} km
+                                  </p>
+                                </div>
+                              </div>
+                              <div className="col d-flex d-flex align-items-center my-3">
+                                <div className="notification-image-container me-3 flex-shrink-0">
+                                  <img
                                     src={"/icons/vehicle/gas-pump.png"}
                                     className="h-100"
                                     alt="Image"
@@ -411,7 +406,6 @@ function Listing() {
                                   </p>
                                 </div>
                               </div>
-                              <div className="col d-flex d-flex align-items-center my-3"></div>
                             </div>
                           </div>
                         </div>
@@ -534,8 +528,8 @@ function Listing() {
                 <h5>Beschrijving</h5>
                 <div className="mb-3">
                   {descriptionExtended
-                    ? listingData?.description
-                    : listingData?.descriptionShort}{" "}
+                    ? formatTextWithLineBreaks(listingData?.description)
+                    : formatTextWithLineBreaks(listingData?.descriptionShort)}
                   {descriptionExtended ? "" : "..."}
                   <span
                     className="fw-bolder highlight click ms-1"
@@ -548,94 +542,11 @@ function Listing() {
                   <>
                     <div className="w-100 border border-2 mt-2 mb-3"></div>
                     <h5>Bieden</h5>
-                    {!loadingBidding ? (
-                      <>
-                        <ul className="list-group mt-3 mb-0">
-                          <li className="list-group-item p-4 d-flex justify-content-center align-items-center highlight">
-                            <div className="spinner-border" role="status" />
-                          </li>
-                        </ul>
-                      </>
-                    ) : (
-                      <>
-                        <div className="card">
-                          <div className="card-body">
-                            <div className="mb-2">
-                              <label
-                                htmlFor="priceInput"
-                                className="form-label"
-                              >
-                                Bedrag
-                              </label>
-                              <input
-                                type="text"
-                                name="bidPrice"
-                                id="priceInput"
-                                className={`form-control ${
-                                  priceInvalid ? "is-invalid" : ""
-                                }`}
-                                disabled={loading}
-                                onChange={async (
-                                  event: React.ChangeEvent<HTMLInputElement>
-                                ) => {
-                                  setPriceValue(event.target.value);
-                                  validatePrice(event.target.value);
-                                }}
-                              />
-                              <div
-                                className={`invalid-feedback ${
-                                  priceInvalid && "d-block"
-                                }`}
-                              >
-                                <i className="bi bi-exclamation-triangle"></i>{" "}
-                                Ongeldige prijs (minimaal €{listingData?.price}
-                                ,- ).
-                              </div>
-                            </div>
-                            <div
-                              className="d-flex align-items-center justify-content-center btn w-100"
-                              onClick={handlePlaceBid}
-                            >
-                              <i className={`bi bi-hammer h5 mb-0`}></i>
-                              <span className="align-middle ms-2">
-                                Plaats bod
-                              </span>
-                            </div>
-                            <hr />
-                            <div className="row info-row d-flex align-items-center my-2">
-                              <div className="col">
-                                <p className="text-muted mb-0">Rafael Lemmen</p>
-                              </div>
-                              <div className="col">
-                                <p className="mb-0 fw-bold d-flex justify-content-center">
-                                  €1500,-
-                                </p>
-                              </div>
-                              <div className="col">
-                                <p className="text-muted mb-0 fs-6">
-                                  <small>4 dagen geleden</small>
-                                </p>
-                              </div>
-                            </div>
-                            <div className="row info-row d-flex align-items-center my-2">
-                              <div className="col">
-                                <p className="text-muted mb-0">Rens Crijns</p>
-                              </div>
-                              <div className="col">
-                                <p className="mb-0 fw-bold d-flex justify-content-center">
-                                  €1500,-
-                                </p>
-                              </div>
-                              <div className="col">
-                                <p className="text-muted mb-0 fs-6">
-                                  <small>4 dagen geleden</small>
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </>
-                    )}
+                    <Bidding
+                      biddingId={listingId ? listingId : "error"}
+                      price={listingData?.price}
+                      owner={listingData?.userId == "me"}
+                    />
                   </>
                 )}
               </div>

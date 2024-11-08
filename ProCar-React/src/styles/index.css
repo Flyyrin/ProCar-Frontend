@@ -89,8 +89,8 @@ textarea:focus {
 }
 
 .notification-image-container {
-  width: 60px;
-  height: 60px;
+  width: 75px;
+  height: 75px;
   overflow: hidden;
   justify-content: center;
   display: flex;
@@ -142,4 +142,8 @@ textarea:focus {
 .badge.active {
   background-color: #5033b6;
   color: #fff;
+}
+
+.markdownContainer p {
+  margin-bottom: 0;
 }

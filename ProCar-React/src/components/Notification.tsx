@@ -1,4 +1,5 @@
 import { NavLink } from "react-router-dom";
+import ReactMarkdown from "react-markdown";
 import axiosInstance from "./AxiosInstance";
 
 function timeAgo(timestamp: string | number): string {
@@ -15,7 +16,7 @@ function timeAgo(timestamp: string | number): string {
     return "Nu";
   } else if (differenceInSeconds < secondsInHour) {
     const minutes = Math.floor(differenceInSeconds / secondsInMinute);
-    return `${minutes} minuut${minutes === 1 ? "" : "en"} geleden`;
+    return `${minutes} ${minutes === 1 ? "minuut" : "minuten"} geleden`;
   } else if (differenceInSeconds < secondsInDay) {
     const hours = Math.floor(differenceInSeconds / secondsInHour);
     return `${hours} uur geleden`;
@@ -53,7 +54,9 @@ function Notification({ notificationData }: { notificationData: any }) {
           <p className="text-muted mb-0 fs-6">
             <small>{timeAgo(notificationData.createdDate)}</small>
           </p>
-          <p className="mb-0">{notificationData.content}</p>
+          <p className="mb-0 markdownContainer">
+            {<ReactMarkdown>{notificationData.content}</ReactMarkdown>}
+          </p>
           <NavLink
             className="mb-0 btn-outline border-0"
             to={`${notificationData.buttonTarget}`}

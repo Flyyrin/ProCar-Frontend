@@ -591,7 +591,7 @@ function Sell() {
                           Je hebt nog geen voertuigen toegevoegd
                         </p>
                         <NavLink
-                          className="nav-link m-0 p-0 ps-2 text-md-center"
+                          className="nav-link m-0 p-0 ps-2 text-center"
                           to="/account/add_vehicle"
                         >
                           <div className="btn btn-sm text-white mb-3">
