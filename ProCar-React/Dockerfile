@@ -1,5 +1,5 @@
 # Use the official Node.js image as the base image
-FROM node:16-alpine
+FROM node:20-alpine
 
 # Set the working directory in the container
 WORKDIR /app
@@ -8,8 +8,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies
-RUN npm ci 
-#RUN npm install
+RUN npm install
 
 # Copy the rest of the application code
 COPY . .
@@ -24,4 +23,4 @@ RUN npm install -g serve
 EXPOSE 3000
 
 # Start the application using 'serve'
-CMD ["serve", "-s", "build", "-l", "3000"]
+CMD ["serve", "-s", "dist", "-l", "3000"]
