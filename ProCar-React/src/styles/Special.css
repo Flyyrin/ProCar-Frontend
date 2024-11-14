@@ -1,0 +1,73 @@
+html,
+body {
+  overflow-x: hidden;
+}
+
+.navbar-brand.animate {
+  padding-bottom: 9px;
+}
+
+.navbar-brand.animate img {
+  position: absolute;
+  margin-top: 2px;
+  animation: fall-roll 7s;
+}
+
+.navbar-brand.animate span {
+  margin-top: -4px !important;
+  margin-left: 34px;
+}
+
+@keyframes fall-roll {
+  0% {
+    margin-top: 3px;
+    margin-left: 0px;
+    transform: rotate(0);
+  }
+  10% {
+    margin-top: 9px;
+    margin-left: 0px;
+    transform: rotate(0);
+  }
+  60% {
+    margin-top: 9px;
+    margin-left: 100%;
+    transform: rotate(1000deg);
+  }
+  61% {
+    margin-top: 9px;
+    margin-left: 100%;
+    transform: rotate(1000deg);
+    margin-top: -100%;
+  }
+  62% {
+    margin-top: 9px;
+    margin-left: -30%;
+    transform: rotate(0);
+    margin-top: -100%;
+  }
+  64% {
+    margin-top: 9px;
+    margin-left: -30%;
+    transform: rotate(-360);
+    margin-top: 0px;
+  }
+  65% {
+    margin-top: 9px;
+    margin-left: -30%;
+    transform: rotate(-360);
+    opacity: 1;
+  }
+  95% {
+    margin-top: 9px;
+    margin-left: 0%;
+    transform: rotate(360deg);
+    opacity: 1;
+  }
+  100% {
+    margin-top: 3px;
+    margin-left: 0%;
+    transform: rotate(360deg);
+    opacity: 1;
+  }
+}
