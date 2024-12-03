@@ -18,7 +18,7 @@ function Listings() {
   function loadNotifications() {
     setLoading(true);
     axiosInstance
-      .get(`/GetUserListings`)
+      .get(`/user/listings`)
       .then(function (response) {
         if (response.status === 200) {
           setListingData(response.data);

@@ -20,7 +20,7 @@ function Notifications() {
   function loadNotifications() {
     setLoading(true);
     axiosInstance
-      .get(`/GetUserNotifications`)
+      .get(`/user/notifications`)
       .then(function (response) {
         if (response.status === 200) {
           setNotificationData(response.data);

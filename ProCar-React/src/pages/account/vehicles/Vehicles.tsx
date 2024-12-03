@@ -53,7 +53,7 @@ function Vehicles() {
   function loadVehicles() {
     setLoading(true);
     axiosInstance
-      .get(`/GetUserVehicles`)
+      .get(`/user/vehicles`)
       .then(function (response) {
         if (response.status === 200) {
           setVehicleData(response.data);
@@ -73,9 +73,7 @@ function Vehicles() {
     setDeleteLoading(true);
     setApiError(false);
     axiosInstance
-      .post("/DeleteVehicle", {
-        vehicleId: deleteVehicleId,
-      })
+      .delete(`/vehicle/${deleteVehicleId}`)
       .then(function (response) {
         if (response.status === 200) {
           setDeleteLoading(false);

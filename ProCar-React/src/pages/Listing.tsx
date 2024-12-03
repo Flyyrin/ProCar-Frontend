@@ -60,7 +60,7 @@ function Listing() {
   const [listingData, setListingData] = useState<Record<string, any>>({});
   useEffect(() => {
     axiosInstance
-      .get(`/GetListing?listingId=${listingId}`)
+      .get(`/listing?listingId=${listingId}`)
       .then(function (response) {
         if (response.status === 200) {
           if (response.data) {
@@ -106,7 +106,7 @@ function Listing() {
   const handleStar = () => {
     setStarConfirm(!starConfirm);
     axiosInstance
-      .post("/UserStarListing", {
+      .post("/user/starListing", {
         listingId: listingId?.toString(),
         star: !starConfirm,
       })
@@ -119,11 +119,10 @@ function Listing() {
   };
 
   const [loadingVehicle, setLoadingVehicle] = useState(true);
-  const [loadingBidding, setLoadingBidding] = useState(true);
   const [vehicleData, setVehicleData] = useState<Record<string, any>>({});
   const loadVehicleData = () => {
     axiosInstance
-      .get(`/GetListingVehicleData?listingId=${listingId}`)
+      .get(`/listing/vehicleData?listingId=${listingId}`)
       .then(function (response) {
         if (response.status === 200) {
           if (response.data) {

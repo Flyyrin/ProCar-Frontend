@@ -94,7 +94,7 @@ function Login() {
           localStorage.removeItem("accessToken");
           localStorage.removeItem("refreshToken");
           axiosInstance
-            .post("/IsEmailVerified", {
+            .post("/user/isEmailVerified", {
               email: formData.email,
             })
             .then(function () {

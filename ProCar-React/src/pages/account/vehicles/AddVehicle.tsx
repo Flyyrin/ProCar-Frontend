@@ -36,7 +36,7 @@ function AddVehicle() {
   const handlePlateCheck = (plate: string) => {
     setLoading(true);
     axiosInstance
-      .get(`/checkLicensePlate?licensePlate=${plate}`)
+      .get(`/vehicle/checkLicensePlate?licensePlate=${plate}`)
       .then(function (response) {
         if (response.status === 200) {
           setPlateSuccess(true);
@@ -78,7 +78,7 @@ function AddVehicle() {
     if (!plateInvalid && plateSuccess) {
       setLoading(true);
       axiosInstance
-        .post("/addVehicle", formData)
+        .post("/vehicle", formData)
         .then(function (response) {
           if (response.status === 200) {
             navigate("/account/my_vehicles", {

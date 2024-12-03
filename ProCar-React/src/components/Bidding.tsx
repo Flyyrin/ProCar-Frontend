@@ -99,7 +99,7 @@ function Bidding({
 
       setPlaceBidLoading(true);
       axiosInstance
-        .post("/PlaceBid", formData)
+        .post("/bid", formData)
         .then(function () {
           if (inputRef.current) {
             inputRef.current.value = "";

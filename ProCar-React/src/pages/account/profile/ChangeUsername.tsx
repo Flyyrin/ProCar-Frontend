@@ -44,7 +44,7 @@ function ChangeUsername() {
     if (!tempNameInvalid) {
       setLoadingSubmit(true);
       axiosInstance
-        .post("/UpdateUserName", formData)
+        .patch("/user/name", formData)
         .then(function (response) {
           if (response.status === 200) {
             navigate("/account/my_profile", {
@@ -65,7 +65,7 @@ function ChangeUsername() {
   useEffect(() => {
     setLoading(true);
     axiosInstance
-      .get(`/GetUserProfileInfo`)
+      .get(`/user/profileInfo`)
       .then(function (response) {
         if (response.status === 200) {
           setNameValue(response.data.username);

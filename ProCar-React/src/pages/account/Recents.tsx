@@ -18,7 +18,7 @@ function Recents() {
   function loadNotifications() {
     setLoading(true);
     axiosInstance
-      .get(`/GetUserViewedListings`)
+      .get(`/user/viewedListings`)
       .then(function (response) {
         if (response.status === 200) {
           setListingData(response.data);
