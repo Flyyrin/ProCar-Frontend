@@ -1,9 +1,11 @@
 import { NavLink, useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axiosInstance from "./AxiosInstance";
 import procarLogo from "/procar.png";
 import indicator from "../assets/indicator.svg";
 import "../styles/Header.css";
+import "../styles/Special.css";
+
 import Alert from "./Alert";
 
 function Header() {
@@ -73,16 +75,25 @@ function Header() {
     return () => clearInterval(intervalId);
   }, []);
 
+  const navBrand = useRef<HTMLAnchorElement | null>(null);
+  const handleLogoDrag = () => {
+    navBrand.current?.classList.add("animate");
+    setTimeout(() => {
+      navBrand.current?.classList.remove("animate");
+    }, 8000);
+  };
+
   return (
     <header>
       <nav className="navbar navbar-expand navbar-light bg-white py-0 border-bottom border-2">
         <div className="container-md navbar-container mx-auto">
-          <NavLink className="navbar-brand" to="/">
+          <NavLink className="navbar-brand" to="/" ref={navBrand}>
             <img
               src={procarLogo}
               alt=""
               height={30}
               className="d-inline-block align-middle me-1"
+              onDragEnd={handleLogoDrag}
             />
             <span className="navbar-brand mb-0 h1">ProCar</span>
           </NavLink>
