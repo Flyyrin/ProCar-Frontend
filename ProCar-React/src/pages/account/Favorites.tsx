@@ -18,7 +18,7 @@ function Favorites() {
   function loadNotifications() {
     setLoading(true);
     axiosInstance
-      .get(`/GetUserStarredListings`)
+      .get(`/user/starredListings`)
       .then(function (response) {
         if (response.status === 200) {
           setListingData(response.data);

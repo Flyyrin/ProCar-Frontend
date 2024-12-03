@@ -296,7 +296,7 @@ function Sell() {
     if (postalRegex.test(postal)) {
       setPostalLoading(true);
       axiosInstance
-        .get(`/CheckPostal?postal=${postal}`)
+        .get(`/checkPostal?postal=${postal}`)
         .then(function (response) {
           if (
             response.data.response.docs[0] &&
@@ -429,7 +429,7 @@ function Sell() {
 
       setLoading(true);
       axiosInstance
-        .post("/PostListing", formData)
+        .post("/listing", formData)
         .then(function (response) {
           if (response.status === 200) {
             navigate(`/listing/${response.data.listingId}`, {
@@ -456,7 +456,7 @@ function Sell() {
   function loadVehicles() {
     setLoadingVeh(true);
     axiosInstance
-      .get(`/GetUserVehicles`)
+      .get(`/user/vehicles`)
       .then(function (response) {
         if (response.status === 200) {
           setVehicleData(response.data);

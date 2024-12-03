@@ -157,7 +157,7 @@ function Signup() {
   };
 
   const updateUserName = () => {
-    axiosInstance.post("/RegisterUserName", formData).then(async function () {
+    axiosInstance.post("/user/name", formData).then(async function () {
       return;
     });
   };

@@ -34,9 +34,7 @@ function Notification({ notificationData }: { notificationData: any }) {
     listItem?.remove();
 
     axiosInstance
-      .post("/DeleteNotification", {
-        notificationId: notificationData.id,
-      })
+      .delete(`/user/notification/${notificationData.id}`)
       .catch(function () {});
   };
 

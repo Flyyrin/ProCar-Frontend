@@ -21,7 +21,7 @@ function Header() {
 
   const getHeaderStatus = () => {
     axiosInstance
-      .get("/GetHeaderStatus", {
+      .get("/headerStatus", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },

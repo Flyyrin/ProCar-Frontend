@@ -19,7 +19,7 @@ function User() {
   useEffect(() => {
     setLoading(true);
     axiosInstance
-      .get(`/GetUserProfileInfo?userId=${userId}`)
+      .get(`/user/profileInfo?userId=${userId}`)
       .then(function (response) {
         if (response.status === 200) {
           setUserData(response.data);
