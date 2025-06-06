@@ -2,10 +2,10 @@
 :link: See preview: [Preview](#camera-preview)
 
 ## :brain: Project Description
-ProCar is an online marketplace website allowing users to sell and buy cars using their lisence plate.
+ProCar is an online marketplace website allowing users to sell and buy cars using their license plate.
 
 ## :joystick: Functions
-- Users can add vehicles using the lisence plate
+- Users can add vehicles using the license plate
 - Users can sell vehicles
 - Users can bid to listings
 - Users get notified of biddings
